@@ -3,11 +3,12 @@
 namespace InetStudio\Tags\Controllers;
 
 use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use InetStudio\Tags\Models\TagModel;
 use Illuminate\Support\Facades\Session;
 use InetStudio\Tags\Requests\SaveTagRequest;
+use InetStudio\Tags\Transformers\TagTransformer;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 
 /**
@@ -20,16 +21,38 @@ class TagsController extends Controller
     /**
      * Список тегов.
      *
+     * @param Datatables $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Datatables $dataTable)
     {
-        $tags = TagModel::search(request()->get('search'))->paginate(20);
+        $table = $dataTable->getHtmlBuilder();
 
-        return view('admin.module.tags::pages.tags.index', [
-            'items' => $tags,
-            'links' => $tags->appends(['search' => request()->get('search')])->links(),
+        $table->columns([
+            ['data' => 'name', 'name' => 'name', 'title' => 'Название'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Дата создания'],
+            ['data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Дата обновления'],
+            ['data' => 'actions', 'name' => 'actions', 'title' => 'Действия', 'orderable' => false, 'searchable' => false],
         ]);
+
+        $table->ajax([
+            'url' => route('back.tags.data'),
+            'type' => 'POST',
+            'data' => 'function(data) { data._token = $(\'meta[name="csrf-token"]\').attr(\'content\'); }',
+        ]);
+
+        $table->parameters([
+            'paging' => true,
+            'pagingType' => 'full_numbers',
+            'searching' => true,
+            'info' => false,
+            'searchDelay' => 350,
+            'language' => [
+                'url' => asset('admin/js/plugins/datatables/locales/russian.json'),
+            ],
+        ]);
+
+        return view('admin.module.tags::pages.tags.index', compact('table'));
     }
 
     /**
@@ -111,26 +134,26 @@ class TagsController extends Controller
             $item = new TagModel();
         }
 
-        $params = [
-            'name' => strip_tags($request->get('name')),
-            'title' => strip_tags($request->get('title')),
-            'content' => $request->get('content'),
-        ];
-
-        if ($edit) {
-            $params['last_editor_id'] = Auth::id();
-        } else {
-            $params['author_id'] = Auth::id();
-            $params['last_editor_id'] = $params['author_id'];
-        }
-
-        $item->fill($params);
+        $item->name = strip_tags($request->get('name'));
+        $item->title = strip_tags($request->get('title'));
+        $item->content = $request->get('content');
         $item->save();
 
         if ($request->has('meta')) {
             foreach ($request->get('meta') as $key => $value) {
                 $item->updateMeta($key, $value);
             }
+        }
+
+        foreach ($request->allFiles() as $name => $upload) {
+            $properties = $request->get($name);
+            if (isset($properties['file'])) {
+                unset($properties['file']);
+            }
+
+            $item->addMedia($upload['file'])
+                ->withCustomProperties($properties)
+                ->toMediaCollection($name, 'tags');
         }
 
         $action = ($edit) ? 'отредактирован' : 'создан';
@@ -194,5 +217,20 @@ class TagsController extends Controller
         $data['items'] = TagModel::select(['id', 'name'])->where('name', 'LIKE', '%'.$search.'%')->get()->toArray();
 
         return response()->json($data);
+    }
+
+    /**
+     * Datatables serverside.
+     *
+     * @return mixed
+     */
+    public function data()
+    {
+        $items = TagModel::query();
+
+        return Datatables::of($items)
+            ->setTransformer(new TagTransformer)
+            ->escapeColumns(['actions'])
+            ->make();
     }
 }

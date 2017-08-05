@@ -9,6 +9,12 @@
 @section('styles')
     <!-- SELECT2 -->
     <link href="{!! asset('admin/css/plugins/select2/select2.min.css') !!}" rel="stylesheet">
+
+    <!-- ICHECK -->
+    <link href="{!! asset('admin/css/plugins/iCheck/custom.css') !!}" rel="stylesheet">
+
+    <!-- CROPPER -->
+    <link href="{!! asset('admin/css/plugins/cropper/cropper.min.css') !!}" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -60,30 +66,18 @@
                                     {!! Form::string('meta[title]', $item->getMeta('title'), [
                                         'label' => [
                                             'title' => 'Title',
-                                            'class' => 'col-sm-2 control-label',
-                                        ],
-                                        'field' => [
-                                            'class' => 'form-control',
                                         ],
                                     ]) !!}
 
                                     {!! Form::string('meta[description]', $item->getMeta('description'), [
                                         'label' => [
                                             'title' => 'Description',
-                                            'class' => 'col-sm-2 control-label',
-                                        ],
-                                        'field' => [
-                                            'class' => 'form-control',
                                         ],
                                     ]) !!}
 
                                     {!! Form::string('meta[keywords]', $item->getMeta('keywords'), [
                                         'label' => [
                                             'title' => 'Keywords',
-                                            'class' => 'col-sm-2 control-label',
-                                        ],
-                                        'field' => [
-                                            'class' => 'form-control',
                                         ],
                                     ]) !!}
 
@@ -96,10 +90,16 @@
                                             [
                                                 'label' => 'Да',
                                                 'value' => 'index, follow',
+                                                'options' => [
+                                                    'class' => 'i-checks',
+                                                ],
                                             ],
                                             [
                                                 'label' => 'Нет',
                                                 'value' => 'noindex, nofollow',
+                                                'options' => [
+                                                    'class' => 'i-checks',
+                                                ],
                                             ],
                                         ],
                                     ]) !!}
@@ -126,20 +126,34 @@
                                     {!! Form::string('meta[og:title]', $item->getMeta('og:title'), [
                                         'label' => [
                                             'title' => 'og:title',
-                                            'class' => 'col-sm-2 control-label',
-                                        ],
-                                        'field' => [
-                                            'class' => 'form-control',
                                         ],
                                     ]) !!}
 
                                     {!! Form::string('meta[og:description]', $item->getMeta('og:description'), [
                                         'label' => [
                                             'title' => 'og:description',
-                                            'class' => 'col-sm-2 control-label',
                                         ],
-                                        'field' => [
-                                            'class' => 'form-control',
+                                    ]) !!}
+
+                                    @php
+                                        $ogImageMedia = $item->getFirstMedia('og_image');
+                                    @endphp
+
+                                    {!! Form::crop('og_image', $ogImageMedia, [
+                                        'label' => [
+                                            'title' => 'og:image',
+                                        ],
+                                        'image' => [
+                                            'src' => isset($ogImageMedia) ? url($ogImageMedia->getUrl()) : '',
+                                            'type' => 'single',
+                                        ],
+                                        'crops' => [
+                                            [
+                                                'title' => 'Размер 968х475',
+                                                'name' => 'default',
+                                                'ratio' => '968/475',
+                                                'value' => isset($ogImageMedia) ? $ogImageMedia->getCustomProperty('crop.default') : '',
+                                            ],
                                         ],
                                     ]) !!}
 
@@ -156,7 +170,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h5 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#mainAccordion" href="#collapseMain" aria-expanded="true">Общая информация</a>
+                                    <a data-toggle="collapse" data-parent="#mainAccordion" href="#collapseMain" aria-expanded="true">Основная информация</a>
                                 </h5>
                             </div>
                             <div id="collapseMain" class="panel-collapse collapse in" aria-expanded="true">
@@ -189,10 +203,6 @@
                                     {!! Form::string('title', $item->title, [
                                         'label' => [
                                             'title' => 'Заголовок',
-                                            'class' => 'col-sm-2 control-label',
-                                        ],
-                                        'field' => [
-                                            'class' => 'form-control',
                                         ],
                                     ]) !!}
 
@@ -216,14 +226,22 @@
             {!! Form::buttons('', '', ['back' => 'back.tags.index']) !!}
 
         {!! Form::close()!!}
-
     </div>
+
+    {!! Form::modals_crop() !!}
+
 @endsection
 
 @section('scripts')
     <!-- SELECT2 -->
     <script src="{!! asset('admin/js/plugins/select2/select2.full.min.js') !!}"></script>
     <script src="{!! asset('admin/js/plugins/select2/i18n/ru.js') !!}"></script>
+
+    <!-- ICHECK -->
+    <script src="{!! asset('admin/js/plugins/iCheck/icheck.min.js') !!}"></script>
+
+    <!-- CROPPER -->
+    <script src="{!! asset('admin/js/plugins/cropper/cropper.min.js') !!}"></script>
 
     <!-- TINYMCE -->
     <script src="{!! asset('admin/js/plugins/tinymce/tinymce.min.js') !!}"></script>

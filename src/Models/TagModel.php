@@ -8,17 +8,20 @@ use Phoenix\EloquentMeta\MetaTrait;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Nicolaslopezj\Searchable\SearchableTrait;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Venturecraft\Revisionable\RevisionableTrait;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
 
 /**
  * Модель тега.
  */
-class TagModel extends Tag
+class TagModel extends Tag implements HasMedia
 {
     use MetaTrait;
     use Sluggable;
     use SoftDeletes;
-    use SearchableTrait;
+    use HasMediaTrait;
+    use RevisionableTrait;
 
     /**
      * Связанная с моделью таблица.
@@ -34,7 +37,7 @@ class TagModel extends Tag
      */
     protected $fillable = [
         'name', 'slug', 'title', 'content',
-        'type', 'order_column', 'author_id', 'last_editor_id',
+        'type', 'order_column',
     ];
 
     /**
@@ -65,26 +68,7 @@ class TagModel extends Tag
         ];
     }
 
-    /**
-     * Searchable rules.
-     *
-     * @var array
-     */
-    protected $searchable = [
-        /**
-         * Columns and their priority in search results.
-         * Columns with higher values are more important.
-         * Columns with equal values have equal importance.
-         *
-         * @var array
-         */
-        'columns' => [
-            'tags.name' => 3,
-            'tags.title' => 3,
-            'tags.content' => 2,
-            'tags.slug' => 1,
-        ],
-    ];
+    protected $revisionCreationsEnabled = true;
 
     /**
      * Обратное отношение "один ко многим" с моделью пользователя.

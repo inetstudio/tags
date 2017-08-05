@@ -3,23 +3,20 @@
     "description": "Package for tags",
     "homepage": "https://github.com/inetstudio/tags",
     "license": "MIT",
+    "authors": [
+      {
+        "name": "Konstantin Bukin",
+        "email": "bukin@inetstudio.ru"
+      }
+    ],
     "require": {
       "cviebrock/eloquent-sluggable": "^4.2",
       "inetstudio/admin-panel": "1.*",
-      "league/fractal": "^0.16.0",
       "phoenix/eloquent-meta": "1.6.*",
       "spatie/laravel-medialibrary": "^5.0.0",
       "spatie/laravel-tags": "1.*",
-      "venturecraft/revisionable": "1.*",
-      "yajra/laravel-datatables-oracle": "^7.9",
-      "yajra/laravel-datatables-html": "^2.0"
+      "venturecraft/revisionable": "1.*"
     },
-    "authors": [
-        {
-            "name": "Konstantin Bukin",
-            "email": "bukin@inetstudio.ru"
-        }
-    ],
     "autoload": {
       "psr-4": {
         "InetStudio\\Tags\\": "src/"

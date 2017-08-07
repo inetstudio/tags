@@ -116,7 +116,7 @@ class TagsController extends Controller
     /**
      * Сохранение тега.
      *
-     * @param $request
+     * @param SaveTagRequest $request
      * @param null $id
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -139,48 +139,8 @@ class TagsController extends Controller
         $item->content = $request->get('content');
         $item->save();
 
-        if ($request->has('meta')) {
-            foreach ($request->get('meta') as $key => $value) {
-                $item->updateMeta($key, $value);
-            }
-        }
-
-        foreach (['og_image'] as $name) {
-            $properties = $request->get($name);
-
-            if (isset($properties['base64'])) {
-                $image = $properties['base64'];
-                $filename = $properties['filename'];
-
-                array_forget($properties, 'base64');
-                array_forget($properties, 'filename');
-            }
-
-            if (isset($image) && isset($filename)) {
-                if (isset($properties['type']) && $properties['type'] == 'single') {
-                    $item->clearMediaCollection($name);
-                    array_forget($properties, 'type');
-                }
-
-                $properties = array_filter($properties);
-
-                $item->addMediaFromBase64($image)
-                    ->withCustomProperties($properties)
-                    ->usingName(pathinfo($filename, PATHINFO_FILENAME))
-                    ->usingFileName(md5($image).'.'.pathinfo($filename, PATHINFO_EXTENSION))
-                    ->toMediaCollection($name, 'tags');
-            } else {
-                if (isset($properties['type']) && $properties['type'] == 'single') {
-                    array_forget($properties, 'type');
-
-                    $properties = array_filter($properties);
-
-                    $media = $item->getFirstMedia($name);
-                    $media->custom_properties = $properties;
-                    $media->save();
-                }
-            }
-        }
+        $this->saveMeta($item, $request);
+        $this->saveImages($item, $request, ['og_image']);
 
         $action = ($edit) ? 'отредактирован' : 'создан';
         Session::flash('success', 'Тег «'.$item->name.'» успешно '.$action);
@@ -196,25 +156,17 @@ class TagsController extends Controller
      */
     public function destroy($id = null)
     {
-        if (! is_null($id) && $id > 0) {
-            $item = TagModel::where('id', '=', $id)->first();
+        if (! is_null($id) && $id > 0 && $item = TagModel::find($id)) {
+            $item->delete();
+
+            return response()->json([
+                'success' => true,
+            ]);
         } else {
             return response()->json([
                 'success' => false,
             ]);
         }
-
-        if (empty($item)) {
-            return response()->json([
-                'success' => false,
-            ]);
-        }
-
-        $item->delete();
-
-        return response()->json([
-            'success' => true,
-        ]);
     }
 
     /**
@@ -260,5 +212,67 @@ class TagsController extends Controller
             ->setTransformer(new TagTransformer)
             ->escapeColumns(['actions'])
             ->make();
+    }
+
+    /**
+     * Сохраняем мета теги.
+     *
+     * @param TagModel $item
+     * @param SaveTagRequest $request
+     */
+    private function saveMeta($item, $request)
+    {
+        if ($request->has('meta')) {
+            foreach ($request->get('meta') as $key => $value) {
+                $item->updateMeta($key, $value);
+            }
+        }
+    }
+
+    /**
+     * Сохраняем изображения.
+     *
+     * @param TagModel $item
+     * @param SaveTagRequest $request
+     * @param array $images
+     */
+    private function saveImages($item, $request, $images)
+    {
+        foreach ($images as $name) {
+            $properties = $request->get($name);
+
+            if (isset($properties['base64'])) {
+                $image = $properties['base64'];
+                $filename = $properties['filename'];
+
+                array_forget($properties, 'base64');
+                array_forget($properties, 'filename');
+            }
+
+            if (isset($image) && isset($filename)) {
+                if (isset($properties['type']) && $properties['type'] == 'single') {
+                    $item->clearMediaCollection($name);
+                    array_forget($properties, 'type');
+                }
+
+                $properties = array_filter($properties);
+
+                $item->addMediaFromBase64($image)
+                    ->withCustomProperties($properties)
+                    ->usingName(pathinfo($filename, PATHINFO_FILENAME))
+                    ->usingFileName(md5($image).'.'.pathinfo($filename, PATHINFO_EXTENSION))
+                    ->toMediaCollection($name, 'tags');
+            } else {
+                if (isset($properties['type']) && $properties['type'] == 'single') {
+                    array_forget($properties, 'type');
+
+                    $properties = array_filter($properties);
+
+                    $media = $item->getFirstMedia($name);
+                    $media->custom_properties = $properties;
+                    $media->save();
+                }
+            }
+        }
     }
 }

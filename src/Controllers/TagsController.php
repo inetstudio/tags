@@ -28,20 +28,50 @@ class TagsController extends Controller
     {
         $table = $dataTable->getHtmlBuilder();
 
-        $table->columns([
+        $table->columns($this->getColumns());
+        $table->ajax($this->getAjaxOptions());
+        $table->parameters($this->getTableParameters());
+
+        return view('admin.module.tags::pages.tags.index', compact('table'));
+    }
+
+    /**
+     * Свойства колонок datatables.
+     *
+     * @return array
+     */
+    private function getColumns()
+    {
+        return [
             ['data' => 'name', 'name' => 'name', 'title' => 'Название'],
             ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Дата создания'],
             ['data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Дата обновления'],
             ['data' => 'actions', 'name' => 'actions', 'title' => 'Действия', 'orderable' => false, 'searchable' => false],
-        ]);
+        ];
+    }
 
-        $table->ajax([
+    /**
+     * Свойства ajax datatables.
+     *
+     * @return array
+     */
+    private function getAjaxOptions()
+    {
+        return [
             'url' => route('back.tags.data'),
             'type' => 'POST',
             'data' => 'function(data) { data._token = $(\'meta[name="csrf-token"]\').attr(\'content\'); }',
-        ]);
+        ];
+    }
 
-        $table->parameters([
+    /**
+     * Свойства datatables.
+     *
+     * @return array
+     */
+    private function getTableParameters()
+    {
+        return [
             'paging' => true,
             'pagingType' => 'full_numbers',
             'searching' => true,
@@ -50,9 +80,7 @@ class TagsController extends Controller
             'language' => [
                 'url' => asset('admin/js/plugins/datatables/locales/russian.json'),
             ],
-        ]);
-
-        return view('admin.module.tags::pages.tags.index', compact('table'));
+        ];
     }
 
     /**

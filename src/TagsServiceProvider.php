@@ -33,8 +33,6 @@ class TagsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register('Phoenix\EloquentMeta\ServiceProvider');
-        $this->app->register('Yajra\Datatables\HtmlServiceProvider');
-        $this->app->register('Yajra\Datatables\DatatablesServiceProvider');
         $this->app->register('Cviebrock\EloquentSluggable\ServiceProvider');
         $this->app->register('Spatie\MediaLibrary\MediaLibraryServiceProvider');
     }

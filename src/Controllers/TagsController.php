@@ -145,15 +145,41 @@ class TagsController extends Controller
             }
         }
 
-        foreach ($request->allFiles() as $name => $upload) {
+        foreach (['og_image'] as $name) {
             $properties = $request->get($name);
-            if (isset($properties['file'])) {
-                unset($properties['file']);
+
+            if (isset($properties['base64'])) {
+                $image = $properties['base64'];
+                $filename = $properties['filename'];
+
+                array_forget($properties, 'base64');
+                array_forget($properties,'filename');
             }
 
-            $item->addMedia($upload['file'])
-                ->withCustomProperties($properties)
-                ->toMediaCollection($name, 'tags');
+            if (isset($image) && isset($filename)) {
+                if (isset($properties['type']) && $properties['type'] == 'single') {
+                    $item->clearMediaCollection($name);
+                    array_forget($properties,'type');
+                }
+
+                $properties = array_filter($properties);
+
+                $item->addMediaFromBase64($image)
+                    ->withCustomProperties($properties)
+                    ->usingName(pathinfo($filename, PATHINFO_FILENAME))
+                    ->usingFileName(md5($image).'.'.pathinfo($filename, PATHINFO_EXTENSION))
+                    ->toMediaCollection($name, 'tags');
+            } else {
+                if (isset($properties['type']) && $properties['type'] == 'single') {
+                    array_forget($properties,'type');
+
+                    $properties = array_filter($properties);
+
+                    $media = $item->getFirstMedia($name);
+                    $media->custom_properties = $properties;
+                    $media->save();
+                }
+            }
         }
 
         $action = ($edit) ? 'отредактирован' : 'создан';

@@ -102,7 +102,6 @@ class TagsController extends Controller
     public function edit($id = null)
     {
         if (! is_null($id) && $id > 0 && $item = TagModel::find($id)) {
-
             return view('admin.module.tags::pages.tags.form', [
                 'item' => $item,
             ]);

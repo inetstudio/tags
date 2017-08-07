@@ -2,8 +2,8 @@
 
 namespace Inetstudio\Tags\Transformers;
 
-use League\Fractal\TransformerAbstract;
 use InetStudio\Tags\Models\TagModel;
+use League\Fractal\TransformerAbstract;
 
 class TagTransformer extends TransformerAbstract
 {

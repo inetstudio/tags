@@ -155,39 +155,14 @@ class TagModel extends Tag implements HasMedia
      */
     public function customizeSlugEngine(Slugify $engine)
     {
-        $engine->addRule('а', 'a');
-        $engine->addRule('б', 'b');
-        $engine->addRule('в', 'v');
-        $engine->addRule('г', 'g');
-        $engine->addRule('д', 'd');
-        $engine->addRule('е', 'e');
-        $engine->addRule('ё', 'jo');
-        $engine->addRule('ж', 'zh');
-        $engine->addRule('з', 'z');
-        $engine->addRule('и', 'i');
-        $engine->addRule('й', 'j');
-        $engine->addRule('к', 'k');
-        $engine->addRule('л', 'l');
-        $engine->addRule('м', 'm');
-        $engine->addRule('н', 'n');
-        $engine->addRule('о', 'o');
-        $engine->addRule('п', 'p');
-        $engine->addRule('р', 'r');
-        $engine->addRule('с', 's');
-        $engine->addRule('т', 't');
-        $engine->addRule('у', 'u');
-        $engine->addRule('ф', 'f');
-        $engine->addRule('х', 'h');
-        $engine->addRule('ц', 'c');
-        $engine->addRule('ч', 'ch');
-        $engine->addRule('ш', 'sh');
-        $engine->addRule('щ', 'shh');
-        $engine->addRule('ъ', '');
-        $engine->addRule('ы', 'y');
-        $engine->addRule('ь', '');
-        $engine->addRule('э', 'je');
-        $engine->addRule('ю', 'ju');
-        $engine->addRule('я', 'ja');
+        $rules = [
+            'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ё' => 'jo', 'ж' => 'zh',
+            'з' => 'z', 'и' => 'i', 'й' => 'j', 'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o', 'п' => 'p',
+            'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'h', 'ц' => 'c', 'ч' => 'ch',
+            'ш' => 'sh', 'щ' => 'shh', 'ъ' => '', 'ы' => 'y', 'ь' => '', 'э' => 'je', 'ю' => 'ju', 'я' => 'ja',
+        ];
+
+        $engine->addRules($rules);
 
         return $engine;
     }

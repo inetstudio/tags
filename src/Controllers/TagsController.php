@@ -56,6 +56,21 @@ class TagsController extends Controller
     }
 
     /**
+     * Datatables serverside.
+     *
+     * @return mixed
+     */
+    public function data()
+    {
+        $items = TagModel::query();
+
+        return Datatables::of($items)
+            ->setTransformer(new TagTransformer)
+            ->escapeColumns(['actions'])
+            ->make();
+    }
+
+    /**
      * Добавление тега.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -86,18 +101,13 @@ class TagsController extends Controller
      */
     public function edit($id = null)
     {
-        if (! is_null($id) && $id > 0) {
-            $item = TagModel::where('id', '=', $id)->first();
-        } else {
-            abort(404);
-        }
+        if (! is_null($id) && $id > 0 && $item = TagModel::find($id)) {
 
-        if (empty($item)) {
-            abort(404);
-        } else {
             return view('admin.module.tags::pages.tags.form', [
                 'item' => $item,
             ]);
+        } else {
+            abort(404);
         }
     }
 
@@ -124,7 +134,7 @@ class TagsController extends Controller
     {
         if (! is_null($id) && $id > 0) {
             $edit = true;
-            $item = TagModel::where('id', '=', $id)->first();
+            $item = TagModel::find($id);
 
             if (empty($item)) {
                 abort(404);
@@ -146,6 +156,63 @@ class TagsController extends Controller
         Session::flash('success', 'Тег «'.$item->name.'» успешно '.$action);
 
         return redirect()->to(route('back.tags.edit', $item->fresh()->id));
+    }
+
+    /**
+     * Сохраняем мета теги.
+     *
+     * @param TagModel $item
+     * @param SaveTagRequest $request
+     */
+    private function saveMeta($item, $request)
+    {
+        if ($request->has('meta')) {
+            foreach ($request->get('meta') as $key => $value) {
+                $item->updateMeta($key, $value);
+            }
+        }
+    }
+
+    /**
+     * Сохраняем изображения.
+     *
+     * @param TagModel $item
+     * @param SaveTagRequest $request
+     * @param array $images
+     */
+    private function saveImages($item, $request, $images)
+    {
+        foreach ($images as $name) {
+            $properties = $request->get($name);
+
+            if (isset($properties['base64']) && isset($properties['filename'])) {
+                $image = $properties['base64'];
+                $filename = $properties['filename'];
+
+                if (isset($properties['type']) && $properties['type'] == 'single') {
+                    $item->clearMediaCollection($name);
+                }
+
+                array_forget($properties, ['type', 'base64', 'filename']);
+                $properties = array_filter($properties);
+
+                $item->addMediaFromBase64($image)
+                    ->withCustomProperties($properties)
+                    ->usingName(pathinfo($filename, PATHINFO_FILENAME))
+                    ->usingFileName(md5($image).'.'.pathinfo($filename, PATHINFO_EXTENSION))
+                    ->toMediaCollection($name, 'tags');
+            } else {
+                if (isset($properties['type']) && $properties['type'] == 'single') {
+                    array_forget($properties, 'type');
+
+                    $properties = array_filter($properties);
+
+                    $media = $item->getFirstMedia($name);
+                    $media->custom_properties = $properties;
+                    $media->save();
+                }
+            }
+        }
     }
 
     /**
@@ -197,82 +264,5 @@ class TagsController extends Controller
         $data['items'] = TagModel::select(['id', 'name'])->where('name', 'LIKE', '%'.$search.'%')->get()->toArray();
 
         return response()->json($data);
-    }
-
-    /**
-     * Datatables serverside.
-     *
-     * @return mixed
-     */
-    public function data()
-    {
-        $items = TagModel::query();
-
-        return Datatables::of($items)
-            ->setTransformer(new TagTransformer)
-            ->escapeColumns(['actions'])
-            ->make();
-    }
-
-    /**
-     * Сохраняем мета теги.
-     *
-     * @param TagModel $item
-     * @param SaveTagRequest $request
-     */
-    private function saveMeta($item, $request)
-    {
-        if ($request->has('meta')) {
-            foreach ($request->get('meta') as $key => $value) {
-                $item->updateMeta($key, $value);
-            }
-        }
-    }
-
-    /**
-     * Сохраняем изображения.
-     *
-     * @param TagModel $item
-     * @param SaveTagRequest $request
-     * @param array $images
-     */
-    private function saveImages($item, $request, $images)
-    {
-        foreach ($images as $name) {
-            $properties = $request->get($name);
-
-            if (isset($properties['base64'])) {
-                $image = $properties['base64'];
-                $filename = $properties['filename'];
-
-                array_forget($properties, 'base64');
-                array_forget($properties, 'filename');
-            }
-
-            if (isset($image) && isset($filename)) {
-                if (isset($properties['type']) && $properties['type'] == 'single') {
-                    $item->clearMediaCollection($name);
-                    array_forget($properties, 'type');
-                }
-
-                $properties = array_filter($properties);
-
-                $item->addMediaFromBase64($image)
-                    ->withCustomProperties($properties)
-                    ->usingName(pathinfo($filename, PATHINFO_FILENAME))
-                    ->usingFileName(md5($image).'.'.pathinfo($filename, PATHINFO_EXTENSION))
-                    ->toMediaCollection($name, 'tags');
-            } else {
-                if (isset($properties['type']) && $properties['type'] == 'single') {
-                    array_forget($properties, 'type');
-
-                    $properties = array_filter($properties);
-
-                    $media = $item->getFirstMedia($name);
-                    $media->custom_properties = $properties;
-                    $media->save();
-                }
-            }
-        }
     }
 }

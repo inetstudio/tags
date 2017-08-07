@@ -94,11 +94,11 @@ class TagsController extends Controller
 
         if (empty($item)) {
             abort(404);
+        } else {
+            return view('admin.module.tags::pages.tags.form', [
+                'item' => $item,
+            ]);
         }
-
-        return view('admin.module.tags::pages.tags.form', [
-            'item' => $item,
-        ]);
     }
 
     /**
@@ -240,6 +240,8 @@ class TagsController extends Controller
     public function getSuggestions(Request $request)
     {
         $search = $request->get('q');
+        $data = [];
+
         $data['items'] = TagModel::select(['id', 'name'])->where('name', 'LIKE', '%'.$search.'%')->get()->toArray();
 
         return response()->json($data);

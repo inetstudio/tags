@@ -14,6 +14,41 @@ use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
 
 /**
  * Модель тега.
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property string $title
+ * @property string|null $content
+ * @property string|null $type
+ * @property int|null $order_column
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property \Carbon\Carbon|null $deleted_at
+ * @property-read \App\User $author
+ * @property-read \App\User $editor
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\MediaLibrary\Media[] $media
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Phoenix\EloquentMeta\Meta[] $meta
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Venturecraft\Revisionable\Revision[] $revisionHistory
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel findSimilarSlugs(\Illuminate\Database\Eloquent\Model $model, $attribute, $config, $slug)
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\InetStudio\Tags\Models\TagModel onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Spatie\Tags\Tag ordered($direction = 'asc')
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereOrderColumn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\InetStudio\Tags\Models\TagModel withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Spatie\Tags\Tag withType($type = null)
+ * @method static \Illuminate\Database\Query\Builder|\InetStudio\Tags\Models\TagModel withoutTrashed()
+ * @mixin \Eloquent
  */
 class TagModel extends Tag implements HasMedia
 {
@@ -116,10 +151,9 @@ class TagModel extends Tag implements HasMedia
      * Правила для транслита.
      *
      * @param Slugify $engine
-     * @param $attribute
      * @return Slugify
      */
-    public function customizeSlugEngine(Slugify $engine, $attribute)
+    public function customizeSlugEngine(Slugify $engine)
     {
         $engine->addRule('а', 'a');
         $engine->addRule('б', 'b');

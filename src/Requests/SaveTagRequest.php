@@ -47,7 +47,7 @@ class SaveTagRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'slug' => 'required|alpha_dash|max:255|unique:tags,slug,' .$request->get('tag_id'),
+            'slug' => 'required|alpha_dash|max:255|unique:tags,slug,'.$request->get('tag_id'),
             'title' => 'max:255',
         ];
     }

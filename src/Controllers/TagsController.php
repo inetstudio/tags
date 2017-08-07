@@ -153,13 +153,13 @@ class TagsController extends Controller
                 $filename = $properties['filename'];
 
                 array_forget($properties, 'base64');
-                array_forget($properties,'filename');
+                array_forget($properties, 'filename');
             }
 
             if (isset($image) && isset($filename)) {
                 if (isset($properties['type']) && $properties['type'] == 'single') {
                     $item->clearMediaCollection($name);
-                    array_forget($properties,'type');
+                    array_forget($properties, 'type');
                 }
 
                 $properties = array_filter($properties);
@@ -171,7 +171,7 @@ class TagsController extends Controller
                     ->toMediaCollection($name, 'tags');
             } else {
                 if (isset($properties['type']) && $properties['type'] == 'single') {
-                    array_forget($properties,'type');
+                    array_forget($properties, 'type');
 
                     $properties = array_filter($properties);
 

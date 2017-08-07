@@ -159,15 +159,10 @@ class TagsController extends Controller
      */
     private function save($request, $id = null)
     {
-        if (! is_null($id) && $id > 0) {
-            $edit = true;
-            $item = TagModel::find($id);
-
-            if (empty($item)) {
-                abort(404);
-            }
+        if (! is_null($id) && $id > 0 && $item = TagModel::find($id)) {
+            $action = 'отредактирован';
         } else {
-            $edit = false;
+            $action = 'создан';
             $item = new TagModel();
         }
 
@@ -179,7 +174,6 @@ class TagsController extends Controller
         $this->saveMeta($item, $request);
         $this->saveImages($item, $request, ['og_image']);
 
-        $action = ($edit) ? 'отредактирован' : 'создан';
         Session::flash('success', 'Тег «'.$item->name.'» успешно '.$action);
 
         return redirect()->to(route('back.tags.edit', $item->fresh()->id));

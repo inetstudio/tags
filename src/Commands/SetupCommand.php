@@ -26,11 +26,33 @@ class SetupCommand extends Command
      * @var array
      */
     protected $calls = [
-        'vendor:publish --provider="InetStudio\Tags\TagsServiceProvider" --tag="migrations"' => 'Publish migrations',
-        'migrate' => 'Migration',
-        'optimize' => 'Optimize',
-        'inetstudio:tags:folders' => 'Create folders',
-        'vendor:publish --provider="InetStudio\Tags\TagsServiceProvider" --tag="public" --force' => 'Publish public',
+        'vendor:publish' => [
+            'description' => 'Publish migrations',
+            'params' => [
+                '--provider' => 'InetStudio\Tags\TagsServiceProvider',
+                '--tag' => 'migrations',
+            ],
+        ],
+        'migrate' => [
+            'description' => 'Migration',
+            'params' => [],
+        ],
+        'optimize' => [
+            'description' => 'Optimize',
+            'params' => [],
+        ],
+        'inetstudio:tags:folders' => [
+            'description' => 'Create folders',
+            'params' => [],
+        ],
+        'vendor:publish' => [
+            'description' => 'Publish public',
+            'params' => [
+                '--provider' => 'InetStudio\Tags\TagsServiceProvider',
+                '--tag' => 'public',
+                '--force' => true,
+            ],
+        ],
     ];
 
     /**
@@ -41,8 +63,8 @@ class SetupCommand extends Command
     public function fire()
     {
         foreach ($this->calls as $command => $info) {
-            $this->line(PHP_EOL.$info);
-            $this->call($command);
+            $this->line(PHP_EOL.$info['description']);
+            $this->call($command, $info['params']);
         }
     }
 }

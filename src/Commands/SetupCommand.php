@@ -29,7 +29,7 @@ class SetupCommand extends Command
         'vandor:publish --provider="InetStudio\Tags\TagsServiceProvider" --tag="migrations" --force' => 'Publish migrations',
         'migrate' => 'Migration',
         'optimize' => 'Optimize',
-        'inetstudio:articles:folders' => 'Create folders',
+        'inetstudio:tags:folders' => 'Create folders',
         'vandor:publish --provider="InetStudio\Tags\TagsServiceProvider" --tag="public" --force' => 'Publish public',
     ];
 

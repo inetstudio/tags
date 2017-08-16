@@ -1,6 +1,6 @@
 <?php
 
-namespace InetStudio\Articles\Commands;
+namespace InetStudio\Tags\Commands;
 
 use Illuminate\Console\Command;
 

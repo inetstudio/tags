@@ -25,6 +25,16 @@ class SaveTagRequest extends FormRequest
     public function messages()
     {
         return [
+            'meta.title.max' => 'Поле «Title» не должно превышать 255 символов',
+            'meta.description.max' => 'Поле «Description» не должно превышать 255 символов',
+            'meta.keywords.max' => 'Поле «Keywords» не должно превышать 255 символов',
+
+            'meta.og:title.max' => 'Поле «og:itle» не должно превышать 255 символов',
+            'meta.og:description.max' => 'Поле «og:description» не должно превышать 255 символов',
+
+            'og_image.crop.default.crop_size' => 'Фиксированный размер области — 968x475 пикселей',
+            'og_image.crop.default.json' => 'Область отображения должна быть представлена в виде JSON',
+
             'name.required' => 'Поле «Название» обязательно для заполнения',
             'name.max' => 'Поле «Название» не должно превышать 255 символов',
 
@@ -46,6 +56,14 @@ class SaveTagRequest extends FormRequest
     public function rules(Request $request)
     {
         return [
+            'meta.title' => 'max:255',
+            'meta.description' => 'max:255',
+            'meta.keywords' => 'max:255',
+            'meta.og:title' => 'max:255',
+            'meta.og:description' => 'max:255',
+
+            'og_image.crop.default' => 'nullable|json|crop_size:968,475,fixed',
+
             'name' => 'required|max:255',
             'slug' => 'required|alpha_dash|max:255|unique:tags,slug,'.$request->get('tag_id'),
             'title' => 'max:255',

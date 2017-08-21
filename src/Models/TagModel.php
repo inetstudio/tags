@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
+use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 
 /**
  * Модель тега.
@@ -57,6 +58,7 @@ class TagModel extends Tag implements HasMedia
     use SoftDeletes;
     use HasMediaTrait;
     use RevisionableTrait;
+    use SluggableScopeHelpers;
 
     const HREF = '/tag/';
 

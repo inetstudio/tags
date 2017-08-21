@@ -58,6 +58,8 @@ class TagModel extends Tag implements HasMedia
     use HasMediaTrait;
     use RevisionableTrait;
 
+    const HREF = '/tag/';
+
     /**
      * Связанная с моделью таблица.
      *
@@ -165,5 +167,15 @@ class TagModel extends Tag implements HasMedia
         $engine->addRules($rules);
 
         return $engine;
+    }
+
+    /**
+     * Ссылка на тег.
+     *
+     * @return \Illuminate\Contracts\Routing\UrlGenerator|string
+     */
+    public function getHrefAttribute()
+    {
+        return url(self::HREF . (!empty($this->slug) ? $this->slug : $this->id));
     }
 }

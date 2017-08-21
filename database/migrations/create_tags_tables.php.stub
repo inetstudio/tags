@@ -12,7 +12,7 @@ class CreateTagsTables extends Migration
             $table->string('name');
             $table->string('slug');
             $table->string('title')->default('');
-            $table->text('content')->nullable('');
+            $table->text('content')->nullable();
             $table->string('type')->nullable();
             $table->integer('order_column')->nullable();
             $table->bigInteger('author_id')->unsigned()->index()->default(0);

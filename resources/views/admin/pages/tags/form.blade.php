@@ -10,9 +10,6 @@
     <!-- CROPPER -->
     <link href="{!! asset('admin/css/plugins/cropper/cropper.min.css') !!}" rel="stylesheet">
 
-    <!-- ICHECK -->
-    <link href="{!! asset('admin/css/plugins/iCheck/custom.css') !!}" rel="stylesheet">
-
     <!-- SELECT2 -->
     <link href="{!! asset('admin/css/plugins/select2/select2.min.css') !!}" rel="stylesheet">
 @endsection
@@ -148,9 +145,6 @@
 @section('scripts')
     <!-- CROPPER -->
     <script src="{!! asset('admin/js/plugins/cropper/cropper.min.js') !!}"></script>
-
-    <!-- ICHECK -->
-    <script src="{!! asset('admin/js/plugins/iCheck/icheck.min.js') !!}"></script>
 
     <!-- PLUPLOAD -->
     <script src="{!! asset('admin/js/plugins/plupload/plupload.full.min.js') !!}"></script>

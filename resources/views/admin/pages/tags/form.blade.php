@@ -9,7 +9,7 @@
 @section('content')
 
     @push('breadcrumbs')
-        @include('admin.module.tags::partials.breadcrumbs')
+        @include('admin.module.tags::partials.tags.breadcrumbs')
         <li>
             <a href="{{ route('back.tags.index') }}">Теги</a>
         </li>

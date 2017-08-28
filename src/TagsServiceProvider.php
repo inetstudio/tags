@@ -8,7 +8,7 @@ class TagsServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views/admin', 'admin.module.tags');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'admin.module.tags');
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
         $this->mergeConfigFrom(

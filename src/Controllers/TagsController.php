@@ -33,7 +33,7 @@ class TagsController extends Controller
         $table->ajax($this->getAjaxOptions());
         $table->parameters($this->getTableParameters());
 
-        return view('admin.module.tags::pages.tags.index', compact('table'));
+        return view('admin.module.tags::pages.index', compact('table'));
     }
 
     /**
@@ -106,7 +106,7 @@ class TagsController extends Controller
      */
     public function create()
     {
-        return view('admin.module.tags::pages.tags.form', [
+        return view('admin.module.tags::pages.form', [
             'item' => new TagModel(),
         ]);
     }
@@ -131,7 +131,7 @@ class TagsController extends Controller
     public function edit($id = null)
     {
         if (! is_null($id) && $id > 0 && $item = TagModel::find($id)) {
-            return view('admin.module.tags::pages.tags.form', [
+            return view('admin.module.tags::pages.form', [
                 'item' => $item,
             ]);
         } else {

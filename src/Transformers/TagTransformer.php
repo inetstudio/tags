@@ -18,7 +18,7 @@ class TagTransformer extends TransformerAbstract
             'name' => $tag->name,
             'created_at' => (string) $tag->created_at,
             'updated_at' => (string) $tag->updated_at,
-            'actions' => view('admin.module.tags::pages.tags.datatables.actions', [
+            'actions' => view('admin.module.tags::partials.datatables.actions', [
                 'id' => $tag->id,
                 'href' => $tag->href,
             ])->render(),

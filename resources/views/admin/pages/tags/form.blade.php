@@ -1,40 +1,19 @@
+@extends('admin::layouts.app')
+
 @php
     $title = ($item->id) ? 'Редактирование тега' : 'Добавление тега';
 @endphp
 
-@extends('admin::layouts.app')
-
 @section('title', $title)
 
-@section('styles')
-    <!-- CROPPER -->
-    <link href="{!! asset('admin/css/plugins/cropper/cropper.min.css') !!}" rel="stylesheet">
-
-    <!-- SELECT2 -->
-    <link href="{!! asset('admin/css/plugins/select2/select2.min.css') !!}" rel="stylesheet">
-@endsection
-
 @section('content')
-    <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-12">
-            <h2>
-                {{ $title }}
-            </h2>
-            <ol class="breadcrumb">
-                <li>
-                    <a href="{{ url('/back/') }}">Главная</a>
-                </li>
-                <li>
-                    <a href="{{ route('back.tags.index') }}">Теги</a>
-                </li>
-                <li class="active">
-                    <strong>
-                        {{ $title }}
-                    </strong>
-                </li>
-            </ol>
-        </div>
-    </div>
+
+    @push('breadcrumbs')
+        @include('admin.module.tags::partials.breadcrumbs')
+        <li>
+            <a href="{{ route('back.tags.index') }}">Теги</a>
+        </li>
+    @endpush
 
     @if ($item->id)
         <div class="row m-sm">
@@ -141,26 +120,4 @@
 
         {!! Form::close()!!}
     </div>
-
-    {!! Form::modals_crop() !!}
-
-    {!! Form::modals_uploader('', '', '') !!}
-
-    {!! Form::modals_edit_image('', '', '') !!}
-
-@endsection
-
-@section('scripts')
-    <!-- CROPPER -->
-    <script src="{!! asset('admin/js/plugins/cropper/cropper.min.js') !!}"></script>
-
-    <!-- PLUPLOAD -->
-    <script src="{!! asset('admin/js/plugins/plupload/plupload.full.min.js') !!}"></script>
-
-    <!-- SELECT2 -->
-    <script src="{!! asset('admin/js/plugins/select2/select2.full.min.js') !!}"></script>
-    <script src="{!! asset('admin/js/plugins/select2/i18n/ru.js') !!}"></script>
-
-    <!-- TINYMCE -->
-    <script src="{!! asset('admin/js/plugins/tinymce/tinymce.min.js') !!}"></script>
 @endsection

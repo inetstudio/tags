@@ -10,8 +10,8 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 
 /**
  * Модель тега.
@@ -51,7 +51,7 @@ use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
  * @method static \Illuminate\Database\Query\Builder|\InetStudio\Tags\Models\TagModel withoutTrashed()
  * @mixin \Eloquent
  */
-class TagModel extends Tag implements HasMedia
+class TagModel extends Tag implements HasMediaConversions
 {
     use MetaTrait;
     use Sluggable;
@@ -179,5 +179,24 @@ class TagModel extends Tag implements HasMedia
     public function getHrefAttribute()
     {
         return url(self::HREF . (!empty($this->slug) ? $this->slug : $this->id));
+    }
+
+    public function registerMediaConversions()
+    {
+        $quality = (config('tags.images.quality')) ? config('tags.images.quality') : 75;
+
+        if (config('tags.images.conversions')) {
+            foreach (config('tags.images.conversions') as $collection => $image) {
+                foreach ($image as $crop) {
+                    foreach ($crop as $conversion) {
+                        $this->addMediaConversion($conversion['name'])
+                            ->quality($quality)
+                            ->width($conversion['size']['width'])
+                            ->height($conversion['size']['height'])
+                            ->performOnCollections($collection);
+                    }
+                }
+            }
+        }
     }
 }

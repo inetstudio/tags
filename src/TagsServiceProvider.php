@@ -11,6 +11,10 @@ class TagsServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'admin.module.tags');
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
+        $this->publishes([
+            __DIR__.'/../config/tags.php' => config_path('tags.php'),
+        ], 'config');
+
         $this->mergeConfigFrom(
             __DIR__.'/../config/filesystems.php', 'filesystems.disks'
         );

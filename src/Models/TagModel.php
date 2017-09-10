@@ -14,7 +14,7 @@ use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 
 /**
- * Модель тега.
+ * InetStudio\Tags\Models\TagModel
  *
  * @property int $id
  * @property string $name
@@ -28,6 +28,7 @@ use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
  * @property \Carbon\Carbon|null $deleted_at
  * @property-read \App\User $author
  * @property-read \App\User $editor
+ * @property-read \Illuminate\Contracts\Routing\UrlGenerator|string $href
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\MediaLibrary\Media[] $media
  * @property-read \Illuminate\Database\Eloquent\Collection|\Phoenix\EloquentMeta\Meta[] $meta
  * @property-read \Illuminate\Database\Eloquent\Collection|\Venturecraft\Revisionable\Revision[] $revisionHistory
@@ -92,21 +93,6 @@ class TagModel extends Tag implements HasMediaConversions
 
     public $translatable = [];
 
-    /**
-     * Return the sluggable configuration array for this model.
-     *
-     * @return array
-     */
-    public function sluggable()
-    {
-        return [
-            'slug' => [
-                'source' => 'name',
-                'unique' => true,
-            ],
-        ];
-    }
-
     protected $revisionCreationsEnabled = true;
 
     /**
@@ -152,6 +138,21 @@ class TagModel extends Tag implements HasMediaConversions
     }
 
     /**
+     * Возвращаем конфиг для генерации slug модели.
+     *
+     * @return array
+     */
+    public function sluggable()
+    {
+        return [
+            'slug' => [
+                'source' => 'name',
+                'unique' => true,
+            ],
+        ];
+    }
+
+    /**
      * Правила для транслита.
      *
      * @param Slugify $engine
@@ -181,6 +182,9 @@ class TagModel extends Tag implements HasMediaConversions
         return url(self::HREF . (!empty($this->slug) ? $this->slug : $this->id));
     }
 
+    /**
+     * Регистрируем преобразования изображений.
+     */
     public function registerMediaConversions()
     {
         $quality = (config('tags.images.quality')) ? config('tags.images.quality') : 75;

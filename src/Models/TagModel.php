@@ -153,6 +153,21 @@ class TagModel extends Tag implements HasMediaConversions
     }
 
     /**
+     * Переопределяем поиск тега по строке.
+     *
+     * @param string $name
+     * @param string|null $type
+     * @param string|null $locale
+     * @return Model|null|static
+     */
+    public static function findFromString(string $name, string $type = null, string $locale = null)
+    {
+        return static::query()
+            ->where('slug', $name)
+            ->first();
+    }
+
+    /**
      * Правила для транслита.
      *
      * @param Slugify $engine

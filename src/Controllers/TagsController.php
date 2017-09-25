@@ -175,6 +175,8 @@ class TagsController extends Controller
         $this->saveMeta($item, $request);
         $this->saveImages($item, $request, ['og_image', 'content']);
 
+        \Event::fire('inetstudio.tags.cache.clear', $item);
+
         Session::flash('success', 'Тег «'.$item->name.'» успешно '.$action);
 
         return redirect()->to(route('back.tags.edit', $item->fresh()->id));
@@ -192,6 +194,8 @@ class TagsController extends Controller
             foreach ($request->get('meta') as $key => $value) {
                 $item->updateMeta($key, $value);
             }
+
+            \Event::fire('inetstudio.seo.cache.clear', $item);
         }
     }
 
@@ -239,6 +243,9 @@ class TagsController extends Controller
                         $cropData = json_decode($cropJSON, true);
 
                         foreach (config('tags.images.conversions.'.$name.'.'.$key) as $conversion) {
+
+                            \Event::fire('inetstudio.images.cache.clear', $conversion['name'].'_'.md5(get_class($item).$item->id));
+
                             $manipulations[$conversion['name']] = [
                                 'manualCrop' => implode(',', [
                                     round($cropData['width']),

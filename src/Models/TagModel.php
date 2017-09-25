@@ -208,7 +208,7 @@ class TagModel extends Tag implements HasMediaConversions
             foreach (config('tags.images.conversions') as $collection => $image) {
                 foreach ($image as $crop) {
                     foreach ($crop as $conversion) {
-                        $imageConversion = $this->addMediaConversion($conversion['name'])->quality($quality);
+                        $imageConversion = $this->addMediaConversion($conversion['name']);
 
                         if (isset($conversion['size']['width'])) {
                             $imageConversion->width($conversion['size']['width']);
@@ -216,6 +216,17 @@ class TagModel extends Tag implements HasMediaConversions
 
                         if (isset($conversion['size']['height'])) {
                             $imageConversion->height($conversion['size']['height']);
+                        }
+
+                        if (isset($conversion['fit']['width']) && isset($conversion['fit']['height'])) {
+                            $imageConversion->fit('max', $conversion['fit']['width'], $conversion['fit']['height']);
+                        }
+
+                        if (isset($conversion['quality'])) {
+                            $imageConversion->quality($conversion['quality']);
+                            $imageConversion->optimize();
+                        } else {
+                            $imageConversion->quality($quality);
                         }
 
                         $imageConversion->performOnCollections($collection);

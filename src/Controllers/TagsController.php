@@ -175,7 +175,7 @@ class TagsController extends Controller
         $this->saveMeta($item, $request);
         $this->saveImages($item, $request, ['og_image', 'content']);
 
-        \Event::fire('inetstudio.tags.cache.clear', $item);
+        \Event::fire('inetstudio.tags.cache.clear', $item->slug);
 
         Session::flash('success', 'Тег «'.$item->name.'» успешно '.$action);
 
@@ -304,9 +304,11 @@ class TagsController extends Controller
     {
         if (! is_null($id) && $id > 0 && $item = TagModel::find($id)) {
 
-            //TODO добавить detach
+            $slug = $item->slug;
 
             $item->delete();
+
+            \Event::fire('inetstudio.tags.cache.clear', $slug);
 
             return response()->json([
                 'success' => true,

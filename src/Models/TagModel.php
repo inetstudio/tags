@@ -118,6 +118,16 @@ class TagModel extends Tag implements HasMediaConversions
     }
 
     /**
+     * Отношение "один ко многим" с моделью "ссылок" на материалы.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function taggables()
+    {
+        return $this->hasMany(TaggableModel::class, 'tag_model_id');
+    }
+
+    /**
      * Отключаем генерацию slug в родительском классе Spatie\Tags\Tag.
      *
      * @return bool

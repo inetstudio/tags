@@ -45,6 +45,7 @@ class TagsController extends Controller
     {
         return [
             ['data' => 'name', 'name' => 'name', 'title' => 'Название'],
+            ['data' => 'taggables_count', 'name' => 'taggables_count', 'title' => 'Количество материалов'],
             ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Дата создания'],
             ['data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Дата обновления'],
             ['data' => 'actions', 'name' => 'actions', 'title' => 'Действия', 'orderable' => false, 'searchable' => false],
@@ -91,7 +92,7 @@ class TagsController extends Controller
      */
     public function data()
     {
-        $items = TagModel::query();
+        $items = TagModel::withCount('taggables');
 
         return Datatables::of($items)
             ->setTransformer(new TagTransformer)

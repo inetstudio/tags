@@ -15,7 +15,8 @@ class TagTransformer extends TransformerAbstract
     {
         return [
             'id' => (int) $tag->id,
-            'name' => $tag->name,
+            'name' => (string) $tag->name,
+            'taggables_count' => (int) $tag->taggables_count,
             'created_at' => (string) $tag->created_at,
             'updated_at' => (string) $tag->updated_at,
             'actions' => view('admin.module.tags::partials.datatables.actions', [

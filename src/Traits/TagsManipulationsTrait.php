@@ -1,10 +1,14 @@
 <?php
 
+namespace InetStudio\Tags\Traits;
+
 use InetStudio\Tags\Models\TagModel;
 
 trait TagsManipulationsTrait
 {
     /**
+     * Сохраняем теги.
+     *
      * @param $item
      * @param $request
      */

@@ -14,7 +14,7 @@ trait TagsManipulationsTrait
      */
     private function saveTags($item, $request)
     {
-        if ($request->has('tags')) {
+        if ($request->filled('tags')) {
             $item->syncTags(TagModel::whereIn('id', (array) $request->get('tags'))->get());
         } else {
             $item->detachTags($item->tags);

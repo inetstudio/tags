@@ -45,7 +45,7 @@ class TagsController extends Controller
      */
     public function data()
     {
-        $items = TagModel::withCount('taggables');
+        $items = TagModel::withCount('taggables as taggables_count');
 
         return DataTables::of($items)
             ->setTransformer(new TagTransformer)

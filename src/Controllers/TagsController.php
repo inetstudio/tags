@@ -3,7 +3,7 @@
 namespace InetStudio\Tags\Controllers;
 
 use Illuminate\Http\Request;
-use Yajra\Datatables\Datatables;
+use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
 use InetStudio\Tags\Models\TagModel;
 use Illuminate\Support\Facades\Session;
@@ -28,10 +28,10 @@ class TagsController extends Controller
     /**
      * Список тегов.
      *
-     * @param Datatables $dataTable
+     * @param DataTables $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Datatables $dataTable)
+    public function index(DataTables $dataTable)
     {
         $table = $this->generateTable($dataTable, 'tags', 'index');
 
@@ -47,9 +47,9 @@ class TagsController extends Controller
     {
         $items = TagModel::withCount('taggables');
 
-        return Datatables::of($items)
+        return DataTables::of($items)
             ->setTransformer(new TagTransformer)
-            ->escapeColumns(['actions'])
+            ->rawColumns(['actions'])
             ->make();
     }
 

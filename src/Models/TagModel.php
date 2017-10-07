@@ -4,6 +4,7 @@ namespace InetStudio\Tags\Models;
 
 use Spatie\Tags\Tag;
 use Cocur\Slugify\Slugify;
+use Spatie\MediaLibrary\Media;
 use Phoenix\EloquentMeta\MetaTrait;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -211,8 +212,10 @@ class TagModel extends Tag implements HasMediaConversions
 
     /**
      * Регистрируем преобразования изображений.
+     *
+     * @param Media|null $media
      */
-    public function registerMediaConversions()
+    public function registerMediaConversions(Media $media = null)
     {
         $quality = (config('tags.images.quality')) ? config('tags.images.quality') : 75;
 

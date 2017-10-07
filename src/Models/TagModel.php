@@ -16,7 +16,7 @@ use InetStudio\SimpleCounters\Traits\HasSimpleCountersTrait;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 
 /**
- * InetStudio\Tags\Models\TagModel
+ * InetStudio\Tags\Models\TagModel.
  *
  * @property int $id
  * @property string $name
@@ -207,7 +207,7 @@ class TagModel extends Tag implements HasMediaConversions
      */
     public function getHrefAttribute()
     {
-        return url(self::HREF . (!empty($this->slug) ? $this->slug : $this->id));
+        return url(self::HREF.(! empty($this->slug) ? $this->slug : $this->id));
     }
 
     /**

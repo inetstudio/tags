@@ -41,6 +41,5 @@ class TagsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
     }
 }

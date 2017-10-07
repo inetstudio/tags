@@ -5,10 +5,9 @@ namespace InetStudio\Tags\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Модель "ссылки" тег-материал
+ * Модель "ссылки" тег-материал.
  *
  * Class Tagable
- * @package App\Models
  */
 class TaggableModel extends Model
 {
@@ -25,7 +24,7 @@ class TaggableModel extends Model
      * @var array
      */
     protected $fillable = [
-        'tag_model_id', 'taggable_id', 'taggable_type'
+        'tag_model_id', 'taggable_id', 'taggable_type',
     ];
 
     /**

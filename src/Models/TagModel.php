@@ -4,6 +4,7 @@ namespace InetStudio\Tags\Models;
 
 use Spatie\Tags\Tag;
 use Cocur\Slugify\Slugify;
+use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\Media;
 use Phoenix\EloquentMeta\MetaTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -58,6 +59,7 @@ class TagModel extends Tag implements HasMediaConversions
 {
     use MetaTrait;
     use Sluggable;
+    use Searchable;
     use SoftDeletes;
     use HasMediaTrait;
     use RevisionableTrait;
@@ -126,6 +128,18 @@ class TagModel extends Tag implements HasMediaConversions
     public function taggables()
     {
         return $this->hasMany(TaggableModel::class, 'tag_model_id');
+    }
+
+    /**
+     * Настройка полей для поиска.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+        $arr = array_only($this->toArray(), ['id', 'name', 'title', 'content']);
+
+        return $arr;
     }
 
     /**

@@ -9,10 +9,10 @@ use InetStudio\Tags\Models\TagModel;
 use Illuminate\Support\Facades\Session;
 use InetStudio\Tags\Requests\SaveTagRequest;
 use InetStudio\Tags\Transformers\TagTransformer;
-use InetStudio\AdminPanel\Traits\DatatablesTrait;
 use Cviebrock\EloquentSluggable\Services\SlugService;
-use InetStudio\AdminPanel\Traits\MetaManipulationsTrait;
-use InetStudio\AdminPanel\Traits\ImagesManipulationsTrait;
+use InetStudio\AdminPanel\Http\Controllers\Back\Traits\DatatablesTrait;
+use InetStudio\AdminPanel\Http\Controllers\Back\Traits\MetaManipulationsTrait;
+use InetStudio\AdminPanel\Http\Controllers\Back\Traits\ImagesManipulationsTrait;
 
 /**
  * Контроллер для управления тегами.

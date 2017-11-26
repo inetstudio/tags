@@ -29,7 +29,7 @@ return [
         'columns' => [
             'index' => [
                 ['data' => 'name', 'name' => 'name', 'title' => 'Название'],
-                ['data' => 'taggables_count', 'name' => 'taggables_count', 'title' => 'Количество материалов'],
+                ['data' => 'taggables_count', 'name' => 'taggables_count', 'title' => 'Количество материалов', 'searchable' => false],
                 ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Дата создания'],
                 ['data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Дата обновления'],
                 ['data' => 'actions', 'name' => 'actions', 'title' => 'Действия', 'orderable' => false, 'searchable' => false],

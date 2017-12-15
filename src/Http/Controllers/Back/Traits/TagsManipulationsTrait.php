@@ -1,6 +1,6 @@
 <?php
 
-namespace InetStudio\Tags\Traits;
+namespace InetStudio\Tags\Http\Controllers\Back\Traits;
 
 use InetStudio\Tags\Models\TagModel;
 

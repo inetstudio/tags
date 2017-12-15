@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['namespace' => 'InetStudio\Tags\Controllers'], function () {
+Route::group(['namespace' => 'InetStudio\Tags\Http\Controllers\Back'], function () {
     Route::group(['middleware' => 'web', 'prefix' => 'back'], function () {
         Route::group(['middleware' => 'back.auth'], function () {
             Route::post('tags/slug', 'TagsController@getSlug')->name('back.tags.getSlug');

@@ -1,15 +1,19 @@
 <?php
 
-namespace InetStudio\Tags\Controllers;
+namespace InetStudio\Tags\Http\Controllers\Back;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use InetStudio\Tags\Models\TagModel;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
-use InetStudio\Tags\Requests\SaveTagRequest;
+use InetStudio\Tags\Events\ModifyTagEvent;
 use InetStudio\Tags\Transformers\TagTransformer;
 use Cviebrock\EloquentSluggable\Services\SlugService;
+use InetStudio\Tags\Http\Requests\Back\SaveTagRequest;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\DatatablesTrait;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\MetaManipulationsTrait;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\ImagesManipulationsTrait;
@@ -31,17 +35,18 @@ class TagsController extends Controller
      * @param DataTables $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(DataTables $dataTable)
+    public function index(DataTables $dataTable): View
     {
         $table = $this->generateTable($dataTable, 'tags', 'index');
 
-        return view('admin.module.tags::pages.index', compact('table'));
+        return view('admin.module.tags::back.pages.index', compact('table'));
     }
 
     /**
      * Datatables serverside.
      *
      * @return mixed
+     * @throws \Exception
      */
     public function data()
     {
@@ -58,9 +63,9 @@ class TagsController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create()
+    public function create(): View
     {
-        return view('admin.module.tags::pages.form', [
+        return view('admin.module.tags::back.pages.form', [
             'item' => new TagModel(),
         ]);
     }
@@ -71,7 +76,7 @@ class TagsController extends Controller
      * @param SaveTagRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(SaveTagRequest $request)
+    public function store(SaveTagRequest $request): RedirectResponse
     {
         return $this->save($request);
     }
@@ -82,10 +87,10 @@ class TagsController extends Controller
      * @param null $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id = null)
+    public function edit($id = null): View
     {
         if (! is_null($id) && $id > 0 && $item = TagModel::find($id)) {
-            return view('admin.module.tags::pages.form', [
+            return view('admin.module.tags::back.pages.form', [
                 'item' => $item,
             ]);
         } else {
@@ -100,7 +105,7 @@ class TagsController extends Controller
      * @param null $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(SaveTagRequest $request, $id = null)
+    public function update(SaveTagRequest $request, $id = null): RedirectResponse
     {
         return $this->save($request, $id);
     }
@@ -112,7 +117,7 @@ class TagsController extends Controller
      * @param null $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    private function save($request, $id = null)
+    private function save($request, $id = null): RedirectResponse
     {
         if (! is_null($id) && $id > 0 && $item = TagModel::find($id)) {
             $action = 'отредактирован';
@@ -129,11 +134,13 @@ class TagsController extends Controller
         $this->saveMeta($item, $request);
         $this->saveImages($item, $request, ['og_image', 'content'], 'tags');
 
-        \Event::fire('inetstudio.tags.cache.clear', $item->slug);
+        event(new ModifyTagEvent($item));
 
         Session::flash('success', 'Тег «'.$item->name.'» успешно '.$action);
 
-        return redirect()->to(route('back.tags.edit', $item->fresh()->id));
+        return response()->redirectToRoute('back.tags.edit', [
+            $item->fresh()->id,
+        ]);
     }
 
     /**
@@ -142,14 +149,12 @@ class TagsController extends Controller
      * @param null $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id = null)
+    public function destroy($id = null): JsonResponse
     {
         if (! is_null($id) && $id > 0 && $item = TagModel::find($id)) {
-            $slug = $item->slug;
+            event(new ModifyTagEvent($item));
 
             $item->delete();
-
-            \Event::fire('inetstudio.tags.cache.clear', $slug);
 
             return response()->json([
                 'success' => true,
@@ -167,7 +172,7 @@ class TagsController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getSlug(Request $request)
+    public function getSlug(Request $request): JsonResponse
     {
         $name = $request->get('name');
         $slug = SlugService::createSlug(TagModel::class, 'slug', $name);
@@ -181,7 +186,7 @@ class TagsController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getSuggestions(Request $request)
+    public function getSuggestions(Request $request): JsonResponse
     {
         $search = $request->get('q');
         $data = [];

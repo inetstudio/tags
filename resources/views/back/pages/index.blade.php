@@ -14,7 +14,7 @@
 @section('content')
 
     @push('breadcrumbs')
-        @include('admin.module.tags::partials.breadcrumbs')
+        @include('admin.module.tags::back.partials.breadcrumbs')
     @endpush
 
     <div class="wrapper wrapper-content">

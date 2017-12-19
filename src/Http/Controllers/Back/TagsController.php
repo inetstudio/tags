@@ -15,7 +15,7 @@ use InetStudio\Tags\Transformers\TagTransformer;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use InetStudio\Tags\Http\Requests\Back\SaveTagRequest;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\DatatablesTrait;
-use InetStudio\AdminPanel\Http\Controllers\Back\Traits\MetaManipulationsTrait;
+use InetStudio\Meta\Http\Controllers\Back\Traits\MetaManipulationsTrait;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\ImagesManipulationsTrait;
 
 /**
@@ -34,6 +34,7 @@ class TagsController extends Controller
      *
      * @param DataTables $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Exception
      */
     public function index(DataTables $dataTable): View
     {

@@ -6,13 +6,15 @@ use Spatie\Tags\Tag;
 use Cocur\Slugify\Slugify;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\Media;
-use Phoenix\EloquentMeta\MetaTrait;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
+use InetStudio\Meta\Models\Traits\Metable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\Image\Exceptions\InvalidManipulation;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
+use InetStudio\Meta\Contracts\Models\Traits\MetableContract;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 
@@ -55,9 +57,9 @@ use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
  * @method static \Illuminate\Database\Query\Builder|\InetStudio\Tags\Models\TagModel withoutTrashed()
  * @mixin \Eloquent
  */
-class TagModel extends Tag implements HasMediaConversions
+class TagModel extends Tag implements MetableContract, HasMediaConversions
 {
-    use MetaTrait;
+    use Metable;
     use Sluggable;
     use Searchable;
     use SoftDeletes;
@@ -228,6 +230,7 @@ class TagModel extends Tag implements HasMediaConversions
      * Регистрируем преобразования изображений.
      *
      * @param Media|null $media
+     * @throws InvalidManipulation
      */
     public function registerMediaConversions(Media $media = null)
     {

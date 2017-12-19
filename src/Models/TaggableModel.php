@@ -6,8 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Модель "ссылки" тег-материал.
- *
+ * 
  * Class Tagable
+ *
+ * @property int $tag_model_id
+ * @property int $taggable_id
+ * @property string $taggable_type
+ * @property-read \InetStudio\Tags\Models\TagModel $tag
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TaggableModel whereTagModelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TaggableModel whereTaggableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TaggableModel whereTaggableType($value)
+ * @mixin \Eloquent
  */
 class TaggableModel extends Model
 {

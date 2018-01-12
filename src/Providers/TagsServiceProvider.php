@@ -4,11 +4,12 @@ namespace InetStudio\Tags\Providers;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
-use InetStudio\Tags\Services\TagsService;
 use InetStudio\Tags\Events\ModifyTagEvent;
+use InetStudio\Tags\Services\Front\TagsService;
 use InetStudio\Tags\Console\Commands\SetupCommand;
 use InetStudio\Tags\Listeners\ClearTagsCacheListener;
 use InetStudio\Tags\Console\Commands\CreateFoldersCommand;
+use InetStudio\Tags\Contracts\Services\TagsServiceContract;
 
 /**
  * Class TagsServiceProvider
@@ -117,6 +118,6 @@ class TagsServiceProvider extends ServiceProvider
      */
     public function registerBindings(): void
     {
-        $this->app->bind('TagsService', TagsService::class);
+        $this->app->bind(TagsServiceContract::class, TagsService::class);
     }
 }

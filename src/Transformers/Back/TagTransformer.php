@@ -1,13 +1,13 @@
 <?php
 
-namespace Inetstudio\Tags\Transformers;
+namespace Inetstudio\Tags\Transformers\Back;
 
 use InetStudio\Tags\Models\TagModel;
 use League\Fractal\TransformerAbstract;
 
 /**
  * Class TagTransformer
- * @package Inetstudio\Tags\Transformers
+ * @package Inetstudio\Tags\Transformers\Back
  */
 class TagTransformer extends TransformerAbstract
 {
@@ -15,7 +15,10 @@ class TagTransformer extends TransformerAbstract
      * Подготовка данных для отображения в таблице.
      *
      * @param TagModel $tag
+     *
      * @return array
+     *
+     * @throws \Throwable
      */
     public function transform(TagModel $tag): array
     {

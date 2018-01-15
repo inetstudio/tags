@@ -11,7 +11,7 @@ use InetStudio\Tags\Models\TagModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use InetStudio\Tags\Events\ModifyTagEvent;
-use InetStudio\Tags\Transformers\TagTransformer;
+use InetStudio\Tags\Transformers\Back\TagTransformer;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use InetStudio\Tags\Http\Requests\Back\SaveTagRequest;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\DatatablesTrait;

@@ -32,13 +32,12 @@ class TagsController extends Controller
     /**
      * Список тегов.
      *
-     * @param DataTables $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * @throws \Exception
      */
-    public function index(DataTables $dataTable): View
+    public function index(): View
     {
-        $table = $this->generateTable($dataTable, 'tags', 'index');
+        $table = $this->generateTable('tags', 'index');
 
         return view('admin.module.tags::back.pages.index', compact('table'));
     }

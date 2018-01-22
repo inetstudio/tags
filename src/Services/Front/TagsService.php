@@ -3,6 +3,7 @@
 namespace InetStudio\Tags\Services\Front;
 
 use League\Fractal\Manager;
+use Illuminate\Support\Collection;
 use InetStudio\Tags\Models\TagModel;
 use Illuminate\Support\Facades\Cache;
 use League\Fractal\Serializer\DataArraySerializer;
@@ -42,6 +43,24 @@ class TagsService implements TagsServiceContract
         }
 
         return $tags->first();
+    }
+
+    /**
+     * Возвращаем теги, привязанные к материалам.
+     *
+     * @param Collection $materials
+     * @return Collection
+     */
+    public function getTagsByMaterials(Collection $materials): Collection
+    {
+        $objectHash = md5($materials->pluck('slug', 'id')->toJson());
+        $cacheKey = 'IngredientsService_getTagsByMaterials_'.$objectHash;
+
+        return Cache::tags(['tags'])->remember($cacheKey, 1440, function () use ($materials) {
+            return $materials->map(function ($item) {
+                return (method_exists($item, 'tags')) ? $item->tags : [];
+            })->filter()->collapse()->unique('id');
+        });
     }
 
     /**

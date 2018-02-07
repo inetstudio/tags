@@ -1,13 +1,13 @@
 <?php
 
-namespace Inetstudio\Tags\Transformers\Back;
+namespace InetStudio\Tags\Transformers\Back;
 
 use InetStudio\Tags\Models\TagModel;
 use League\Fractal\TransformerAbstract;
 
 /**
  * Class TagTransformer
- * @package Inetstudio\Tags\Transformers\Back
+ * @package InetStudio\Tags\Transformers\Back
  */
 class TagTransformer extends TransformerAbstract
 {

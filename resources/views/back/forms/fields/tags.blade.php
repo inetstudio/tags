@@ -13,5 +13,7 @@
         'multiple' => 'multiple',
         'data-source' => route('back.tags.getSuggestions'),
     ],
-    'options' => (old('tags')) ? \InetStudio\Tags\Models\TagModel::whereIn('id', old('tags'))->pluck('name', 'id')->toArray() : $item->tags()->pluck('name', 'id')->toArray(),
+    'options' => [
+        'values' => (old('tags')) ? \InetStudio\Tags\Models\TagModel::whereIn('id', old('tags'))->pluck('name', 'id')->toArray() : $item->tags()->pluck('name', 'id')->toArray(),
+    ],
 ]) !!}

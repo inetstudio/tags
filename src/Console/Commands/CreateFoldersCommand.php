@@ -27,12 +27,30 @@ class CreateFoldersCommand extends Command
      */
     public function handle(): void
     {
-        if (config('filesystems.disks.tags')) {
-            $path = config('filesystems.disks.tags.root');
+        $folders = [
+            'tags',
+        ];
 
-            if (! is_dir($path)) {
-                mkdir($path, 0777, true);
+        foreach ($folders as $folder) {
+            if (config('filesystems.disks.'.$folder)) {
+                $path = config('filesystems.disks.'.$folder.'.root');
+                $this->createDir($path);
             }
+        }
+    }
+
+    /**
+     * Создание директории.
+     *
+     * @param $path
+     */
+    private function createDir($path): void
+    {
+        if (! is_dir($path)) {
+            mkdir($path, 0777, true);
+            $this->info($path.' Has been created.');
+        } else {
+            $this->info($path.' Already created.');
         }
     }
 }

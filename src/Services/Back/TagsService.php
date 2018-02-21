@@ -1,6 +1,6 @@
 <?php
 
-namespace InetStudio\Tags\Services\Front;
+namespace InetStudio\Tags\Services\Back;
 
 use InetStudio\Tags\Models\TagModel;
 use InetStudio\Tags\Contracts\Services\Back\TagsServiceContract;

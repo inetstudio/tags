@@ -7,8 +7,8 @@ use Illuminate\Support\Collection;
 use InetStudio\Tags\Models\TagModel;
 use Illuminate\Support\Facades\Cache;
 use League\Fractal\Serializer\DataArraySerializer;
-use InetStudio\Tags\Contracts\Services\TagsServiceContract;
 use InetStudio\Tags\Transformers\Front\TagsSiteMapTransformer;
+use InetStudio\Tags\Contracts\Services\Front\TagsServiceContract;
 
 /**
  * Class TagsService

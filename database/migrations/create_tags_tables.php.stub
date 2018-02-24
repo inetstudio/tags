@@ -13,10 +13,6 @@ class CreateTagsTables extends Migration
             $table->string('slug');
             $table->string('title')->default('');
             $table->text('content')->nullable();
-            $table->string('type')->nullable();
-            $table->integer('order_column')->nullable();
-            $table->bigInteger('author_id')->unsigned()->index()->default(0);
-            $table->bigInteger('last_editor_id')->unsigned()->index()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -25,8 +21,10 @@ class CreateTagsTables extends Migration
             $table->integer('tag_model_id')->unsigned();
             $table->integer('taggable_id')->unsigned();
             $table->string('taggable_type');
+            $table->timestamps();
 
-            $table->foreign('tag_model_id')->references('id')->on('tags')->onDelete('cascade');
+            $table->unique(['tag_model_id', 'taggable_id', 'taggable_type'], 'taggables_ids_type_unique');
+            $table->foreign('tag_model_id')->references('id')->on('tags')->onDelete('cascade')->onUpdate('cascade');;
         });
     }
 

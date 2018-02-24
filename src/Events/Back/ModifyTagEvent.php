@@ -1,20 +1,18 @@
 <?php
 
-namespace InetStudio\Tags\Events;
+namespace InetStudio\Tags\Events\Back;
 
 use Illuminate\Queue\SerializesModels;
+use InetStudio\Tags\Contracts\Events\Back\ModifyTagEventContract;
 
 /**
- * Class ModifyTagEvent
- * @package InetStudio\Tags\Events
+ * Class ModifyTagEvent.
  */
-class ModifyTagEvent
+class ModifyTagEvent implements ModifyTagEventContract
 {
     use SerializesModels;
 
     /**
-     * Объект тега.
-     *
      * @var
      */
     public $object;

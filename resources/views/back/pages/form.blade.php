@@ -9,10 +9,7 @@
 @section('content')
 
     @push('breadcrumbs')
-        @include('admin.module.tags::back.partials.breadcrumbs')
-        <li>
-            <a href="{{ route('back.tags.index') }}">Теги</a>
-        </li>
+        @include('admin.module.tags::back.partials.breadcrumbs.form')
     @endpush
 
     <div class="row m-sm">
@@ -30,13 +27,13 @@
 
         {!! Form::info() !!}
 
-        {!! Form::open(['url' => (!$item->id) ? route('back.tags.store') : route('back.tags.update', [$item->id]), 'id' => 'mainForm', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) !!}
+        {!! Form::open(['url' => (! $item->id) ? route('back.tags.store') : route('back.tags.update', [$item->id]), 'id' => 'mainForm', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) !!}
 
             @if ($item->id)
                 {{ method_field('PUT') }}
             @endif
 
-            {!! Form::hidden('tag_id', (!$item->id) ? "" : $item->id) !!}
+            {!! Form::hidden('tag_id', (! $item->id) ? "" : $item->id) !!}
 
             {!! Form::meta('', $item) !!}
 
@@ -110,6 +107,10 @@
                                                 ],
                                             ],
                                         ],
+                                    ]) !!}
+
+                                    {!! Form::tags('', $item, [
+                                        'exclude' => [$item->id],
                                     ]) !!}
 
                                 </div>

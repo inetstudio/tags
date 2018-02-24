@@ -2,16 +2,10 @@
 
 namespace InetStudio\Tags\Providers;
 
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
-use InetStudio\Tags\Events\ModifyTagEvent;
-use InetStudio\Tags\Console\Commands\SetupCommand;
-use InetStudio\Tags\Listeners\ClearTagsCacheListener;
-use InetStudio\Tags\Console\Commands\CreateFoldersCommand;
 
 /**
- * Class TagsServiceProvider
- * @package InetStudio\Tags\Providers
+ * Class TagsServiceProvider.
  */
 class TagsServiceProvider extends ServiceProvider
 {
@@ -26,7 +20,6 @@ class TagsServiceProvider extends ServiceProvider
         $this->registerPublishes();
         $this->registerRoutes();
         $this->registerViews();
-        $this->registerEvents();
     }
 
     /**
@@ -48,8 +41,8 @@ class TagsServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                SetupCommand::class,
-                CreateFoldersCommand::class,
+                'InetStudio\Tags\Console\Commands\SetupCommand',
+                'InetStudio\Tags\Console\Commands\CreateFoldersCommand',
             ]);
         }
     }
@@ -100,24 +93,46 @@ class TagsServiceProvider extends ServiceProvider
     }
 
     /**
-     * Регистрация событий.
-     *
-     * @return void
-     */
-    protected function registerEvents(): void
-    {
-        Event::listen(ModifyTagEvent::class, ClearTagsCacheListener::class);
-    }
-
-    /**
      * Регистрация привязок, алиасов и сторонних провайдеров сервисов.
      *
      * @return void
      */
     public function registerBindings(): void
     {
+        // Controllers
+        $this->app->bind('InetStudio\Tags\Contracts\Http\Controllers\Back\TagsControllerContract', 'InetStudio\Tags\Http\Controllers\Back\TagsController');
+        $this->app->bind('InetStudio\Tags\Contracts\Http\Controllers\Back\TagsDataControllerContract', 'InetStudio\Tags\Http\Controllers\Back\TagsDataController');
+        $this->app->bind('InetStudio\Tags\Contracts\Http\Controllers\Back\TagsUtilityControllerContract', 'InetStudio\Tags\Http\Controllers\Back\TagsUtilityController');
+
+        // Events
+        $this->app->bind('InetStudio\Tags\Contracts\Events\Back\ModifyTagEventContract', 'InetStudio\Tags\Events\Back\ModifyTagEvent');
+
+        // Models
+        $this->app->bind('InetStudio\Tags\Contracts\Models\TagModelContract', 'InetStudio\Tags\Models\TagModel');
+        $this->app->bind('InetStudio\Tags\Contracts\Models\TaggableModelContract', 'InetStudio\Tags\Models\TaggableModel');
+
+        // Repositories
+        $this->app->bind('InetStudio\Tags\Contracts\Repositories\Back\TagsRepositoryContract', 'InetStudio\Tags\Repositories\Back\TagsRepository');
+
+        // Requests
+        $this->app->bind('InetStudio\Tags\Contracts\Http\Requests\Back\SaveTagRequestContract', 'InetStudio\Tags\Http\Requests\Back\SaveTagRequest');
+
+        // Responses
+        $this->app->bind('InetStudio\Tags\Contracts\Http\Responses\Back\Tags\DestroyResponseContract', 'InetStudio\Tags\Http\Responses\Back\Tags\DestroyResponse');
+        $this->app->bind('InetStudio\Tags\Contracts\Http\Responses\Back\Tags\FormResponseContract', 'InetStudio\Tags\Http\Responses\Back\Tags\FormResponse');
+        $this->app->bind('InetStudio\Tags\Contracts\Http\Responses\Back\Tags\IndexResponseContract', 'InetStudio\Tags\Http\Responses\Back\Tags\IndexResponse');
+        $this->app->bind('InetStudio\Tags\Contracts\Http\Responses\Back\Tags\SaveResponseContract', 'InetStudio\Tags\Http\Responses\Back\Tags\SaveResponse');
+        $this->app->bind('InetStudio\Tags\Contracts\Http\Responses\Back\Utility\SlugResponseContract', 'InetStudio\Tags\Http\Responses\Back\Utility\SlugResponse');
+        $this->app->bind('InetStudio\Tags\Contracts\Http\Responses\Back\Utility\SuggestionsResponseContract', 'InetStudio\Tags\Http\Responses\Back\Utility\SuggestionsResponse');
+
         // Services
         $this->app->bind('InetStudio\Tags\Contracts\Services\Back\TagsServiceContract', 'InetStudio\Tags\Services\Back\TagsService');
+        $this->app->bind('InetStudio\Tags\Contracts\Services\Back\TagsDataTableServiceContract', 'InetStudio\Tags\Services\Back\TagsDataTableService');
         $this->app->bind('InetStudio\Tags\Contracts\Services\Front\TagsServiceContract', 'InetStudio\Tags\Services\Front\TagsService');
+
+        // Transformers
+        $this->app->bind('InetStudio\Tags\Contracts\Transformers\Back\TagTransformerContract', 'InetStudio\Tags\Transformers\Back\TagTransformer');
+        $this->app->bind('InetStudio\Tags\Contracts\Transformers\Back\SuggestionTransformerContract', 'InetStudio\Tags\Transformers\Back\SuggestionTransformer');
+        $this->app->bind('InetStudio\Tags\Contracts\Transformers\Front\TagsSiteMapTransformerContract', 'InetStudio\Tags\Transformers\Front\TagsSiteMapTransformer');
     }
 }

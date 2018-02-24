@@ -3,22 +3,9 @@
 namespace InetStudio\Tags\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use InetStudio\Tags\Contracts\Models\TaggableModelContract;
 
-/**
- * Модель "ссылки" тег-материал.
- * 
- * Class Tagable
- *
- * @property int $tag_model_id
- * @property int $taggable_id
- * @property string $taggable_type
- * @property-read \InetStudio\Tags\Models\TagModel $tag
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TaggableModel whereTagModelId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TaggableModel whereTaggableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TaggableModel whereTaggableType($value)
- * @mixin \Eloquent
- */
-class TaggableModel extends Model
+class TaggableModel extends Model implements TaggableModelContract
 {
     /**
      * Связанная с моделью таблица.
@@ -37,12 +24,22 @@ class TaggableModel extends Model
     ];
 
     /**
+     * Атрибуты, которые должны быть преобразованы в даты.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'created_at',
+        'updated_at',
+    ];
+
+    /**
      * Обратное отношение "один ко многим" с моделью тега.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function tag()
     {
-        return $this->belongsTo(TagModel::class, 'tag_model_id');
+        return $this->belongsTo(app()->make('InetStudio\Tags\Contracts\Models\TagModelContract'), 'tag_model_id');
     }
 }

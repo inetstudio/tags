@@ -1,3 +1,5 @@
+@inject('tagsService', 'InetStudio\Tags\Contracts\Services\Back\TagsServiceContract')
+
 @php
     $item = $value;
 @endphp
@@ -12,8 +14,9 @@
         'style' => 'width: 100%',
         'multiple' => 'multiple',
         'data-source' => route('back.tags.getSuggestions'),
+        'data-exclude' => isset($attributes['exclude']) ? implode('|', $attributes['exclude']) : '',
     ],
     'options' => [
-        'values' => (old('tags')) ? \InetStudio\Tags\Models\TagModel::whereIn('id', old('tags'))->pluck('name', 'id')->toArray() : $item->tags()->pluck('name', 'id')->toArray(),
+        'values' => (old('tags')) ? $tagsService->getTagsByIDs(old('tags'), true)->pluck('name', 'id')->toArray() : $item->tags()->pluck('name', 'id')->toArray(),
     ],
 ]) !!}

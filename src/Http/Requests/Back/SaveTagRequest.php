@@ -4,8 +4,12 @@ namespace InetStudio\Tags\Http\Requests\Back;
 
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
+use InetStudio\Tags\Contracts\Http\Requests\Back\SaveTagRequestContract;
 
-class SaveTagRequest extends FormRequest
+/**
+ * Class SaveTagRequest.
+ */
+class SaveTagRequest extends FormRequest implements SaveTagRequestContract
 {
     /**
      * Определить, авторизован ли пользователь для этого запроса.
@@ -51,6 +55,7 @@ class SaveTagRequest extends FormRequest
      * Правила проверки запроса.
      *
      * @param Request $request
+     * 
      * @return array
      */
     public function rules(Request $request): array

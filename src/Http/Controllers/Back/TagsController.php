@@ -2,224 +2,134 @@
 
 namespace InetStudio\Tags\Http\Controllers\Back;
 
-use Illuminate\View\View;
-use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use InetStudio\Tags\Models\TagModel;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Session;
-use InetStudio\Tags\Events\ModifyTagEvent;
-use InetStudio\Tags\Transformers\Back\TagTransformer;
-use Cviebrock\EloquentSluggable\Services\SlugService;
-use InetStudio\Tags\Http\Requests\Back\SaveTagRequest;
-use InetStudio\AdminPanel\Http\Controllers\Back\Traits\DatatablesTrait;
-use InetStudio\Meta\Http\Controllers\Back\Traits\MetaManipulationsTrait;
-use InetStudio\AdminPanel\Http\Controllers\Back\Traits\ImagesManipulationsTrait;
+use InetStudio\Tags\Contracts\Http\Requests\Back\SaveTagRequestContract;
+use InetStudio\Tags\Contracts\Http\Controllers\Back\TagsControllerContract;
+use InetStudio\Tags\Contracts\Http\Responses\Back\Tags\FormResponseContract;
+use InetStudio\Tags\Contracts\Http\Responses\Back\Tags\SaveResponseContract;
+use InetStudio\Tags\Contracts\Http\Responses\Back\Tags\IndexResponseContract;
+use InetStudio\Tags\Contracts\Http\Responses\Back\Tags\DestroyResponseContract;
 
 /**
- * Контроллер для управления тегами.
- *
- * Class ContestByTagStatusesController
+ * Class TagsController.
  */
-class TagsController extends Controller
+class TagsController extends Controller implements TagsControllerContract
 {
-    use DatatablesTrait;
-    use MetaManipulationsTrait;
-    use ImagesManipulationsTrait;
+    /**
+     * Используемые сервисы.
+     *
+     * @var array
+     */
+    private $services;
 
     /**
-     * Список тегов.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @throws \Exception
+     * TagsController constructor.
      */
-    public function index(): View
+    public function __construct()
     {
-        $table = $this->generateTable('tags', 'index');
-
-        return view('admin.module.tags::back.pages.index', compact('table'));
+        $this->services['tags'] = app()->make('InetStudio\Tags\Contracts\Services\Back\TagsServiceContract');
+        $this->services['dataTables'] = app()->make('InetStudio\Tags\Contracts\Services\Back\TagsDataTableServiceContract');
     }
 
     /**
-     * Datatables serverside.
+     * Список объектов.
      *
-     * @return mixed
-     * @throws \Exception
+     * @return IndexResponseContract
      */
-    public function data()
+    public function index(): IndexResponseContract
     {
-        $items = TagModel::withCount('taggables as taggables_count');
+        $table = $this->services['dataTables']->html();
 
-        return DataTables::of($items)
-            ->setTransformer(new TagTransformer)
-            ->rawColumns(['actions'])
-            ->make();
-    }
-
-    /**
-     * Добавление тега.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function create(): View
-    {
-        return view('admin.module.tags::back.pages.form', [
-            'item' => new TagModel(),
+        return app()->makeWith('InetStudio\Tags\Contracts\Http\Responses\Back\Tags\IndexResponseContract', [
+            'data' => compact('table'),
         ]);
     }
 
     /**
-     * Создание тега.
+     * Добавление объекта.
      *
-     * @param SaveTagRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return FormResponseContract
      */
-    public function store(SaveTagRequest $request): RedirectResponse
+    public function create(): FormResponseContract
+    {
+        $item = $this->services['tags']->getTagObject();
+
+        return app()->makeWith('InetStudio\Tags\Contracts\Http\Responses\Back\Tags\FormResponseContract', [
+            'data' => compact('item'),
+        ]);
+    }
+
+    /**
+     * Создание объекта.
+     *
+     * @param SaveTagRequestContract $request
+     *
+     * @return SaveResponseContract
+     */
+    public function store(SaveTagRequestContract $request): SaveResponseContract
     {
         return $this->save($request);
     }
 
     /**
-     * Редактирование тега.
+     * Редактирование объекта.
      *
-     * @param null $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param int $id
+     *
+     * @return FormResponseContract
      */
-    public function edit($id = null): View
+    public function edit($id = 0): FormResponseContract
     {
-        if (! is_null($id) && $id > 0 && $item = TagModel::find($id)) {
-            return view('admin.module.tags::back.pages.form', [
-                'item' => $item,
-            ]);
-        } else {
-            abort(404);
-        }
+        $item = $this->services['tags']->getTagObject($id);
+
+        return app()->makeWith('InetStudio\Tags\Contracts\Http\Responses\Back\Tags\FormResponseContract', [
+            'data' => compact('item'),
+        ]);
     }
 
     /**
-     * Обновление тега.
+     * Обновление объекта.
      *
-     * @param SaveTagRequest $request
-     * @param null $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @param SaveTagRequestContract $request
+     * @param int $id
+     *
+     * @return SaveResponseContract
      */
-    public function update(SaveTagRequest $request, $id = null): RedirectResponse
+    public function update(SaveTagRequestContract $request, int $id = 0): SaveResponseContract
     {
         return $this->save($request, $id);
     }
 
     /**
-     * Сохранение тега.
+     * Сохранение объекта.
      *
-     * @param SaveTagRequest $request
-     * @param null $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @param SaveTagRequestContract $request
+     * @param int $id
+     *
+     * @return SaveResponseContract
      */
-    private function save($request, $id = null): RedirectResponse
+    private function save(SaveTagRequestContract $request, int $id = 0): SaveResponseContract
     {
-        if (! is_null($id) && $id > 0 && $item = TagModel::find($id)) {
-            $action = 'отредактирован';
-        } else {
-            $action = 'создан';
-            $item = new TagModel();
-        }
+        $item = $this->services['tags']->save($request, $id);
 
-        $item->name = strip_tags($request->get('name'));
-        $item->title = strip_tags($request->get('title'));
-        $item->content = $request->input('content.text');
-        $item->save();
-
-        $this->saveMeta($item, $request);
-        $this->saveImages($item, $request, ['og_image', 'content'], 'tags');
-
-        event(new ModifyTagEvent($item));
-
-        Session::flash('success', 'Тег «'.$item->name.'» успешно '.$action);
-
-        return response()->redirectToRoute('back.tags.edit', [
-            $item->fresh()->id,
+        return app()->makeWith('InetStudio\Tags\Contracts\Http\Responses\Back\Tags\SaveResponseContract', [
+            'item' => $item,
         ]);
     }
 
     /**
-     * Удаление тега.
+     * Удаление объекта.
      *
-     * @param null $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function destroy($id = null): JsonResponse
-    {
-        if (! is_null($id) && $id > 0 && $item = TagModel::find($id)) {
-            event(new ModifyTagEvent($item));
-
-            $item->delete();
-
-            return response()->json([
-                'success' => true,
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-            ]);
-        }
-    }
-
-    /**
-     * Получаем slug для модели по строке.
+     * @param int $id
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return DestroyResponseContract
      */
-    public function getSlug(Request $request): JsonResponse
+    public function destroy(int $id = 0): DestroyResponseContract
     {
-        $name = $request->get('name');
-        $slug = ($name) ? SlugService::createSlug(TagModel::class, 'slug', $name) : '';
+        $result = $this->services['tags']->destroy($id);
 
-        return response()->json($slug);
-    }
-
-    /**
-     * Возвращаем теги для поля.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getSuggestions(Request $request): JsonResponse
-    {
-        $search = $request->get('q');
-
-        $items = TagModel::select(['id', 'name', 'slug'])->where('name', 'LIKE', '%'.$search.'%')->get();
-
-        if ($request->filled('type') and $request->get('type') == 'autocomplete') {
-            $type = get_class(new TagModel());
-
-            $data = $items->mapToGroups(function ($item) use ($type) {
-                return [
-                    'suggestions' => [
-                        'value' => $item->name,
-                        'data' => [
-                            'id' => $item->id,
-                            'type' => $type,
-                            'title' => $item->name,
-                            'path' => parse_url($item->href, PHP_URL_PATH),
-                            'href' => $item->href,
-                        ],
-                    ],
-                ];
-            });
-        } else {
-            $data = $items->mapToGroups(function ($item) {
-                return [
-                    'items' => [
-                        'id' => $item->id,
-                        'name' => $item->name,
-                    ],
-                ];
-            });
-        }
-
-        return response()->json($data);
+        return app()->makeWith('InetStudio\Tags\Contracts\Http\Responses\Back\Tags\DestroyResponseContract', [
+            'result' => ($result === null) ? false : $result,
+        ]);
     }
 }

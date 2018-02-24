@@ -2,25 +2,25 @@
 
 namespace InetStudio\Tags\Transformers\Back;
 
-use InetStudio\Tags\Models\TagModel;
 use League\Fractal\TransformerAbstract;
+use InetStudio\Tags\Contracts\Models\TagModelContract;
+use InetStudio\Hashtags\Contracts\Transformers\Back\Tags\TagTransformerContract;
 
 /**
- * Class TagTransformer
- * @package InetStudio\Tags\Transformers\Back
+ * Class TagTransformer.
  */
-class TagTransformer extends TransformerAbstract
+class TagTransformer extends TransformerAbstract implements TagTransformerContract
 {
     /**
      * Подготовка данных для отображения в таблице.
      *
-     * @param TagModel $tag
+     * @param TagModelContract $tag
      *
      * @return array
      *
      * @throws \Throwable
      */
-    public function transform(TagModel $tag): array
+    public function transform(TagModelContract $tag): array
     {
         return [
             'id' => (int) $tag->id,

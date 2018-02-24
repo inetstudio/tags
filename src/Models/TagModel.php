@@ -2,70 +2,26 @@
 
 namespace InetStudio\Tags\Models;
 
-use Spatie\Tags\Tag;
 use Cocur\Slugify\Slugify;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\Media;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use InetStudio\Meta\Models\Traits\Metable;
+use InetStudio\Tags\Models\Traits\HasTags;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\Image\Exceptions\InvalidManipulation;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
+use InetStudio\Tags\Contracts\Models\TagModelContract;
 use InetStudio\Meta\Contracts\Models\Traits\MetableContract;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 
-
-/**
- * InetStudio\Tags\Models\TagModel
- *
- * @property int $id
- * @property string $name
- * @property string $slug
- * @property string $title
- * @property string|null $content
- * @property string|null $type
- * @property int|null $order_column
- * @property int $author_id
- * @property int $last_editor_id
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \Carbon\Carbon|null $deleted_at
- * @property-read \App\User $author
- * @property-read \Illuminate\Database\Eloquent\Collection|\InetStudio\SimpleCounters\Models\SimpleCounterModel[] $counters
- * @property-read \App\User $editor
- * @property-read \Illuminate\Contracts\Routing\UrlGenerator|string $href
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\MediaLibrary\Media[] $media
- * @property-read \Illuminate\Database\Eloquent\Collection|\InetStudio\Meta\Models\MetaModel[] $meta
- * @property-read \Illuminate\Database\Eloquent\Collection|\Venturecraft\Revisionable\Revision[] $revisionHistory
- * @property-read \Illuminate\Database\Eloquent\Collection|\InetStudio\Tags\Models\TaggableModel[] $taggables
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel findSimilarSlugs($attribute, $config, $slug)
- * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Query\Builder|\InetStudio\Tags\Models\TagModel onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|\Spatie\Tags\Tag ordered($direction = 'asc')
- * @method static bool|null restore()
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereAuthorId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereContent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereLastEditorId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereOrderColumn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Tags\Models\TagModel whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\InetStudio\Tags\Models\TagModel withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|\Spatie\Tags\Tag withType($type = null)
- * @method static \Illuminate\Database\Query\Builder|\InetStudio\Tags\Models\TagModel withoutTrashed()
- * @mixin \Eloquent
- */
-class TagModel extends Tag implements MetableContract, HasMediaConversions
+class TagModel extends Model implements TagModelContract, MetableContract, HasMediaConversions
 {
+    use HasTags;
     use Metable;
     use Sluggable;
     use Searchable;
@@ -91,7 +47,6 @@ class TagModel extends Tag implements MetableContract, HasMediaConversions
      */
     protected $fillable = [
         'name', 'slug', 'title', 'content',
-        'type', 'order_column',
     ];
 
     /**
@@ -105,29 +60,7 @@ class TagModel extends Tag implements MetableContract, HasMediaConversions
         'deleted_at',
     ];
 
-    public $translatable = [];
-
     protected $revisionCreationsEnabled = true;
-
-    /**
-     * Обратное отношение "один ко многим" с моделью пользователя.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function author()
-    {
-        return $this->belongsTo(\App\User::class, 'author_id');
-    }
-
-    /**
-     * Обратное отношение "один ко многим" с моделью пользователя.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function editor()
-    {
-        return $this->belongsTo(\App\User::class, 'last_editor_id');
-    }
 
     /**
      * Отношение "один ко многим" с моделью "ссылок" на материалы.
@@ -136,7 +69,7 @@ class TagModel extends Tag implements MetableContract, HasMediaConversions
      */
     public function taggables()
     {
-        return $this->hasMany(TaggableModel::class, 'tag_model_id');
+        return $this->hasMany(app()->make('InetStudio\Tags\Contracts\Models\TaggableModelContract'), 'tag_model_id');
     }
 
     /**
@@ -152,28 +85,6 @@ class TagModel extends Tag implements MetableContract, HasMediaConversions
     }
 
     /**
-     * Отключаем генерацию slug в родительском классе Spatie\Tags\Tag.
-     *
-     * @return bool
-     */
-    public static function bootHasSlug()
-    {
-        return true;
-    }
-
-    /**
-     * Переопределяем сохранение атрибута родительского класса, не используя перевод.
-     *
-     * @param string $key
-     * @param mixed $value
-     * @return $this
-     */
-    public function setAttribute($key, $value)
-    {
-        return Model::setAttribute($key, $value);
-    }
-
-    /**
      * Возвращаем конфиг для генерации slug модели.
      *
      * @return array
@@ -186,21 +97,6 @@ class TagModel extends Tag implements MetableContract, HasMediaConversions
                 'unique' => true,
             ],
         ];
-    }
-
-    /**
-     * Переопределяем поиск тега по строке.
-     *
-     * @param string $name
-     * @param string|null $type
-     * @param string|null $locale
-     * @return Model|null|static
-     */
-    public static function findFromString(string $name, string $type = null, string $locale = null)
-    {
-        return static::query()
-            ->where('slug', $name)
-            ->first();
     }
 
     /**

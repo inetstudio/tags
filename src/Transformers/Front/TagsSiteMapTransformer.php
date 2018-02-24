@@ -2,26 +2,26 @@
 
 namespace InetStudio\Tags\Transformers\Front;
 
-use InetStudio\Tags\Models\TagModel;
 use League\Fractal\TransformerAbstract;
+use InetStudio\Tags\Contracts\Models\TagModelContract;
 use League\Fractal\Resource\Collection as FractalCollection;
+use InetStudio\Tags\Contracts\Transformers\Front\TagsSiteMapTransformerContract;
 
 /**
- * Class TagsSiteMapTransformer
- * @package InetStudio\Tags\Transformers\Front
+ * Class TagsSiteMapTransformer.
  */
-class TagsSiteMapTransformer extends TransformerAbstract
+class TagsSiteMapTransformer extends TransformerAbstract implements TagsSiteMapTransformerContract
 {
     /**
      * Подготовка данных для отображения в карте сайта.
      *
-     * @param TagModel $tag
+     * @param TagModelContract $tag
      *
      * @return array
      *
      * @throws \Throwable
      */
-    public function transform(TagModel $tag): array
+    public function transform(TagModelContract $tag): array
     {
         return [
             'loc' => $tag->href,

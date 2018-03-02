@@ -3,6 +3,7 @@
 namespace InetStudio\Tags\Repositories\Back;
 
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 use InetStudio\Tags\Contracts\Models\TagModelContract;
 use InetStudio\Tags\Contracts\Repositories\Back\TagsRepositoryContract;
 use InetStudio\Tags\Contracts\Http\Requests\Back\SaveTagRequestContract;
@@ -16,6 +17,7 @@ class TagsRepository implements TagsRepositoryContract
      * @var TagModelContract
      */
     private $model;
+
 
     /**
      * TagsRepository constructor.
@@ -53,8 +55,7 @@ class TagsRepository implements TagsRepositoryContract
      */
     public function getItemsByIDs($ids, bool $returnBuilder = false)
     {
-        $builder = $this->model::select(['id', 'name', 'slug'])
-            ->whereIn('id', (array) $ids);
+        $builder = $this->getItemsQuery()->whereIn('id', (array) $ids);
 
         if ($returnBuilder) {
             return $builder;
@@ -107,9 +108,8 @@ class TagsRepository implements TagsRepositoryContract
      */
     public function searchItemsByField(string $field, string $value, bool $returnBuilder = false)
     {
-        $builder = $this->model::select(['id', 'name', 'title', 'slug'])
-            ->where($field, 'LIKE', '%'.$value.'%');
-
+        $builder = $this->getItemsQuery(['title'])->where($field, 'LIKE', '%'.$value.'%');
+        
         if ($returnBuilder) {
             return $builder;
         }
@@ -126,9 +126,8 @@ class TagsRepository implements TagsRepositoryContract
      */
     public function getAllItems(bool $returnBuilder = false)
     {
-        $builder = $this->model::select(['id', 'name', 'slug', 'created_at', 'updated_at'])
-            ->orderBy('created_at', 'desc');
-
+        $builder = $this->getItemsQuery(['created_at', 'updated_at'])->orderBy('created_at', 'desc');
+        
         if ($returnBuilder) {
             return $builder;
         }
@@ -160,14 +159,8 @@ class TagsRepository implements TagsRepositoryContract
      */
     public function getItemBySlug(string $slug, bool $returnBuilder = false)
     {
-        $builder = $this->model::select(['id', 'title', 'content', 'slug'])
-            ->with(['meta' => function ($query) {
-                $query->select(['metable_id', 'metable_type', 'key', 'value']);
-            }, 'media' => function ($query) {
-                $query->select(['id', 'model_id', 'model_type', 'collection_name', 'file_name', 'disk']);
-            }])
-            ->whereSlug($slug);
-
+        $builder = $this->getItemsQuery(['title', 'content'], ['meta', 'media'])->whereSlug($slug);
+        
         if ($returnBuilder) {
             return $builder;
         }
@@ -175,5 +168,35 @@ class TagsRepository implements TagsRepositoryContract
         $item = $builder->first();
 
         return $item;
+    }
+
+    /**
+     * Возвращаем запрос на получение объектов.
+     *
+     * @param array $extColumns
+     * @param array $with
+     *
+     * @return Builder
+     */
+    protected function getItemsQuery($extColumns = [], $with = []): Builder
+    {
+        $defaultColumns = ['id', 'name', 'slug'];
+
+        $relations = [
+            'meta' => function ($query) {
+                $query->select(['metable_id', 'metable_type', 'key', 'value']);
+            },
+
+            'media' => function ($query) {
+                $query->select(['id', 'model_id', 'model_type', 'collection_name', 'file_name', 'disk']);
+            },
+
+            'tags' => function ($query) {
+                $query->select(['id', 'name', 'slug']);
+            },
+        ];
+
+        return $this->model::select(array_merge($defaultColumns, $extColumns))
+            ->with(array_intersect_key($relations, array_flip($with)));
     }
 }

@@ -143,7 +143,7 @@ class TagModel extends Model implements TagModelContract, MetableContract, HasMe
             foreach (config('tags.images.conversions') as $collection => $image) {
                 foreach ($image as $crop) {
                     foreach ($crop as $conversion) {
-                        $imageConversion = $this->addMediaConversion($conversion['name']);
+                        $imageConversion = $this->addMediaConversion($conversion['name'])->nonQueued();
 
                         if (isset($conversion['size']['width'])) {
                             $imageConversion->width($conversion['size']['width']);

@@ -15,31 +15,31 @@ class TagsSiteMapTransformer extends TransformerAbstract implements TagsSiteMapT
     /**
      * Подготовка данных для отображения в карте сайта.
      *
-     * @param TagModelContract $tag
+     * @param TagModelContract $item
      *
      * @return array
      *
      * @throws \Throwable
      */
-    public function transform(TagModelContract $tag): array
+    public function transform(TagModelContract $item): array
     {
         return [
-            'loc' => $tag->href,
-            'lastmod' => $tag->updated_at->toW3cString(),
+            'loc' => $item->href,
+            'lastmod' => $item->updated_at->toW3cString(),
             'priority' => '0.7',
             'freq' => 'monthly',
         ];
     }
 
     /**
-     * Обработка коллекции тегов.
+     * Обработка коллекции объектов.
      *
-     * @param $tags
+     * @param $items
      *
      * @return FractalCollection
      */
-    public function transformCollection($tags): FractalCollection
+    public function transformCollection($items): FractalCollection
     {
-        return new FractalCollection($tags, $this);
+        return new FractalCollection($items, $this);
     }
 }

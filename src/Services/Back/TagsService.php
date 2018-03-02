@@ -73,7 +73,7 @@ class TagsService implements TagsServiceContract
 
         $images = (config('tags.images.conversions')) ? array_keys(config('tags.images.conversions')) : [];
         app()->make('InetStudio\AdminPanel\Contracts\Services\Back\Images\ImagesServiceContract')
-            ->attachToObject($request, $item, $images, 'Tags');
+            ->attachToObject($request, $item, $images, 'tags');
 
         $this->attachToObject($request, $item);
 

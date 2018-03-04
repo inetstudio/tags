@@ -1,6 +1,6 @@
 <?php
 
-namespace InetStudio\Tags\Repositories\Back\Traits;
+namespace InetStudio\Tags\Repositories\Traits;
 
 /**
  * Trait TagsRepositoryTrait.

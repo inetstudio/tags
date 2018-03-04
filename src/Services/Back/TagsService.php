@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Session;
 use League\Fractal\Serializer\DataArraySerializer;
 use InetStudio\Tags\Contracts\Models\TagModelContract;
 use InetStudio\Tags\Contracts\Services\Back\TagsServiceContract;
-use InetStudio\Tags\Contracts\Repositories\Back\TagsRepositoryContract;
+use InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract;
 use InetStudio\Tags\Contracts\Http\Requests\Back\SaveTagRequestContract;
 
 /**
@@ -71,9 +71,9 @@ class TagsService implements TagsServiceContract
         app()->make('InetStudio\Meta\Contracts\Services\Back\MetaServiceContract')
             ->attachToObject($request, $item);
 
-        $images = (config('tags.images.conversions')) ? array_keys(config('tags.images.conversions')) : [];
-        app()->make('InetStudio\AdminPanel\Contracts\Services\Back\Images\ImagesServiceContract')
-            ->attachToObject($request, $item, $images, 'tags');
+        $images = (config('tags.images.conversions.tag')) ? array_keys(config('tags.images.conversions.tag')) : [];
+        app()->make('InetStudio\Uploads\Contracts\Services\Back\ImagesServiceContract')
+            ->attachToObject($request, $item, $images, 'tags', 'tag');
 
         $this->attachToObject($request, $item);
 
@@ -97,12 +97,6 @@ class TagsService implements TagsServiceContract
      */
     public function destroy(int $id): ?bool
     {
-        $item = $this->repository->getItemByID($id);
-
-        event(app()->makeWith('InetStudio\Tags\Contracts\Events\Back\ModifyTagEventContract', [
-            'object' => $item,
-        ]));
-
         return $this->repository->destroy($id);
     }
 

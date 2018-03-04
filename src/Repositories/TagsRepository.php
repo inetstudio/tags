@@ -1,11 +1,11 @@
 <?php
 
-namespace InetStudio\Tags\Repositories\Back;
+namespace InetStudio\Tags\Repositories;
 
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use InetStudio\Tags\Contracts\Models\TagModelContract;
-use InetStudio\Tags\Contracts\Repositories\Back\TagsRepositoryContract;
+use InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract;
 use InetStudio\Tags\Contracts\Http\Requests\Back\SaveTagRequestContract;
 
 /**
@@ -17,7 +17,6 @@ class TagsRepository implements TagsRepositoryContract
      * @var TagModelContract
      */
     private $model;
-
 
     /**
      * TagsRepository constructor.

@@ -5,7 +5,7 @@ namespace InetStudio\Tags\Services\Back;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
 use Yajra\DataTables\Services\DataTable;
-use InetStudio\Tags\Contracts\Repositories\Back\TagsRepositoryContract;
+use InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract;
 use InetStudio\Tags\Contracts\Services\Back\TagsDataTableServiceContract;
 
 class TagsDataTableService extends DataTable implements TagsDataTableServiceContract

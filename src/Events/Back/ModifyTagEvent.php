@@ -18,9 +18,8 @@ class ModifyTagEvent implements ModifyTagEventContract
     public $object;
 
     /**
-     * Create a new event instance.
-     *
      * ModifyTagEvent constructor.
+     *
      * @param $object
      */
     public function __construct($object)

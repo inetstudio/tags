@@ -4,14 +4,12 @@ namespace InetStudio\Tags\Models;
 
 use Cocur\Slugify\Slugify;
 use Laravel\Scout\Searchable;
-use Spatie\MediaLibrary\Media;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use InetStudio\Meta\Models\Traits\Metable;
 use InetStudio\Tags\Models\Traits\HasTags;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\Image\Exceptions\InvalidManipulation;
+use InetStudio\Uploads\Models\Traits\HasImages;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use InetStudio\Tags\Contracts\Models\TagModelContract;
@@ -24,14 +22,19 @@ class TagModel extends Model implements TagModelContract, MetableContract, HasMe
     use HasTags;
     use Metable;
     use Sluggable;
+    use HasImages;
     use Searchable;
     use SoftDeletes;
-    use HasMediaTrait;
     use RevisionableTrait;
     use SluggableScopeHelpers;
     use HasSimpleCountersTrait;
 
     const HREF = '/tag/';
+
+    protected $images = [
+        'config' => 'tags',
+        'model' => 'tag',
+    ];
 
     /**
      * Связанная с моделью таблица.
@@ -127,47 +130,5 @@ class TagModel extends Model implements TagModelContract, MetableContract, HasMe
     public function getHrefAttribute()
     {
         return url(self::HREF.(! empty($this->slug) ? $this->slug : $this->id));
-    }
-
-    /**
-     * Регистрируем преобразования изображений.
-     *
-     * @param Media|null $media
-     * @throws InvalidManipulation
-     */
-    public function registerMediaConversions(Media $media = null)
-    {
-        $quality = (config('tags.images.quality')) ? config('tags.images.quality') : 75;
-
-        if (config('tags.images.conversions')) {
-            foreach (config('tags.images.conversions') as $collection => $image) {
-                foreach ($image as $crop) {
-                    foreach ($crop as $conversion) {
-                        $imageConversion = $this->addMediaConversion($conversion['name'])->nonQueued();
-
-                        if (isset($conversion['size']['width'])) {
-                            $imageConversion->width($conversion['size']['width']);
-                        }
-
-                        if (isset($conversion['size']['height'])) {
-                            $imageConversion->height($conversion['size']['height']);
-                        }
-
-                        if (isset($conversion['fit']['width']) && isset($conversion['fit']['height'])) {
-                            $imageConversion->fit('max', $conversion['fit']['width'], $conversion['fit']['height']);
-                        }
-
-                        if (isset($conversion['quality'])) {
-                            $imageConversion->quality($conversion['quality']);
-                            $imageConversion->optimize();
-                        } else {
-                            $imageConversion->quality($quality);
-                        }
-
-                        $imageConversion->performOnCollections($collection);
-                    }
-                }
-            }
-        }
     }
 }

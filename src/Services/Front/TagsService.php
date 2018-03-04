@@ -6,7 +6,7 @@ use League\Fractal\Manager;
 use Illuminate\Support\Collection;
 use League\Fractal\Serializer\DataArraySerializer;
 use InetStudio\Tags\Contracts\Services\Front\TagsServiceContract;
-use InetStudio\Tags\Contracts\Repositories\Back\TagsRepositoryContract;
+use InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract;
 
 /**
  * Class TagsService.

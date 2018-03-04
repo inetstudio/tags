@@ -20,6 +20,7 @@ class TagsServiceProvider extends ServiceProvider
         $this->registerPublishes();
         $this->registerRoutes();
         $this->registerViews();
+        $this->registerObservers();
     }
 
     /**
@@ -93,6 +94,16 @@ class TagsServiceProvider extends ServiceProvider
     }
 
     /**
+     * Регистрация наблюдателей.
+     *
+     * @return void
+     */
+    public function registerObservers(): void
+    {
+        $this->app->make('InetStudio\Tags\Contracts\Models\TagModelContract')::observe($this->app->make('InetStudio\Tags\Contracts\Observers\TagObserverContract'));
+    }
+
+    /**
      * Регистрация привязок, алиасов и сторонних провайдеров сервисов.
      *
      * @return void
@@ -111,8 +122,11 @@ class TagsServiceProvider extends ServiceProvider
         $this->app->bind('InetStudio\Tags\Contracts\Models\TagModelContract', 'InetStudio\Tags\Models\TagModel');
         $this->app->bind('InetStudio\Tags\Contracts\Models\TaggableModelContract', 'InetStudio\Tags\Models\TaggableModel');
 
+        // Observers
+        $this->app->bind('InetStudio\Tags\Contracts\Observers\TagObserverContract', 'InetStudio\Tags\Observers\TagObserver');
+
         // Repositories
-        $this->app->bind('InetStudio\Tags\Contracts\Repositories\Back\TagsRepositoryContract', 'InetStudio\Tags\Repositories\Back\TagsRepository');
+        $this->app->bind('InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract', 'InetStudio\Tags\Repositories\TagsRepository');
 
         // Requests
         $this->app->bind('InetStudio\Tags\Contracts\Http\Requests\Back\SaveTagRequestContract', 'InetStudio\Tags\Http\Requests\Back\SaveTagRequest');
@@ -126,8 +140,9 @@ class TagsServiceProvider extends ServiceProvider
         $this->app->bind('InetStudio\Tags\Contracts\Http\Responses\Back\Utility\SuggestionsResponseContract', 'InetStudio\Tags\Http\Responses\Back\Utility\SuggestionsResponse');
 
         // Services
-        $this->app->bind('InetStudio\Tags\Contracts\Services\Back\TagsServiceContract', 'InetStudio\Tags\Services\Back\TagsService');
         $this->app->bind('InetStudio\Tags\Contracts\Services\Back\TagsDataTableServiceContract', 'InetStudio\Tags\Services\Back\TagsDataTableService');
+        $this->app->bind('InetStudio\Tags\Contracts\Services\Back\TagsObserverServiceContract', 'InetStudio\Tags\Services\Back\TagsObserverService');
+        $this->app->bind('InetStudio\Tags\Contracts\Services\Back\TagsServiceContract', 'InetStudio\Tags\Services\Back\TagsService');
         $this->app->bind('InetStudio\Tags\Contracts\Services\Front\TagsServiceContract', 'InetStudio\Tags\Services\Front\TagsService');
 
         // Transformers

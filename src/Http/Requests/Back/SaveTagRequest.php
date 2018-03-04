@@ -55,7 +55,7 @@ class SaveTagRequest extends FormRequest implements SaveTagRequestContract
      * Правила проверки запроса.
      *
      * @param Request $request
-     * 
+     *
      * @return array
      */
     public function rules(Request $request): array
@@ -69,7 +69,7 @@ class SaveTagRequest extends FormRequest implements SaveTagRequestContract
 
             'og_image.crop.default' => [
                 'nullable', 'json',
-                new CropSize(968,475,'min', ''),
+                new CropSize(968, 475, 'min', ''),
             ],
 
             'name' => 'required|max:255',

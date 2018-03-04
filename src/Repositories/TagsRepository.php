@@ -108,7 +108,7 @@ class TagsRepository implements TagsRepositoryContract
     public function searchItemsByField(string $field, string $value, bool $returnBuilder = false)
     {
         $builder = $this->getItemsQuery(['title'])->where($field, 'LIKE', '%'.$value.'%');
-        
+
         if ($returnBuilder) {
             return $builder;
         }
@@ -126,7 +126,7 @@ class TagsRepository implements TagsRepositoryContract
     public function getAllItems(bool $returnBuilder = false)
     {
         $builder = $this->getItemsQuery(['created_at', 'updated_at'])->orderBy('created_at', 'desc');
-        
+
         if ($returnBuilder) {
             return $builder;
         }
@@ -159,7 +159,7 @@ class TagsRepository implements TagsRepositoryContract
     public function getItemBySlug(string $slug, bool $returnBuilder = false)
     {
         $builder = $this->getItemsQuery(['title', 'content'], ['meta', 'media'])->whereSlug($slug);
-        
+
         if ($returnBuilder) {
             return $builder;
         }

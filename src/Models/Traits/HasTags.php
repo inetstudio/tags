@@ -28,6 +28,7 @@ trait HasTags
     public static function getTagClassName(): string
     {
         $model = app()->make('InetStudio\Tags\Contracts\Models\TagModelContract');
+
         return get_class($model);
     }
 

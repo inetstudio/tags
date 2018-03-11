@@ -37,11 +37,7 @@ class TagsRepository implements TagsRepositoryContract
      */
     public function getItemByID(int $id): TagModelContract
     {
-        if (! (! is_null($id) && $id > 0 && $item = $this->model::find($id))) {
-            $item = $this->model;
-        }
-
-        return $item;
+        return $this->model::find($id) ?? new $this->model;
     }
 
     /**

@@ -175,7 +175,7 @@ class TagsRepository implements TagsRepositoryContract
      */
     protected function getItemsQuery($extColumns = [], $with = []): Builder
     {
-        $defaultColumns = ['id', 'name', 'slug'];
+        $defaultColumns = ['id', 'name', 'slug', 'created_at'];
 
         $relations = [
             'meta' => function ($query) {

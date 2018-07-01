@@ -110,7 +110,7 @@ class TagsService implements TagsServiceContract
      */
     public function getSuggestions(string $search, $type): array
     {
-        $items = $this->repository->searchItemsByField('name', $search);
+        $items = $this->repository->searchItems([['name', 'LIKE', '%'.$search.'%']]);
 
         $resource = (app()->makeWith('InetStudio\Tags\Contracts\Transformers\Back\SuggestionTransformerContract', [
             'type' => $type,

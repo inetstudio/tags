@@ -8,22 +8,18 @@ namespace InetStudio\Tags\Repositories\Traits;
 trait TagsRepositoryTrait
 {
     /**
-     * Получаем объекты по категории.
+     * Получаем объекты по тегу.
      *
      * @param string $slug
+     * @param array $extColumns
+     * @param array $with
      * @param bool $returnBuilder
      *
      * @return mixed
      */
-    public function getItemsByTag(string $slug, bool $returnBuilder = false)
+    public function getItemsByTag(string $slug, array $extColumns = [], array $with = [], bool $returnBuilder = false)
     {
-        $builder = $this->model::select(['id', 'title', 'description', 'slug'])
-            ->with(['meta' => function ($query) {
-                $query->select(['metable_id', 'metable_type', 'key', 'value']);
-            }, 'media' => function ($query) {
-                $query->select(['id', 'model_id', 'model_type', 'collection_name', 'file_name', 'disk']);
-            }])
-            ->withTags($slug);
+        $builder = $this->getItemsQuery($extColumns, $with)->withTags($slug);
 
         if ($returnBuilder) {
             return $builder;

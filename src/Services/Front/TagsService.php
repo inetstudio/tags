@@ -6,7 +6,6 @@ use League\Fractal\Manager;
 use Illuminate\Support\Collection;
 use League\Fractal\Serializer\DataArraySerializer;
 use InetStudio\Tags\Contracts\Services\Front\TagsServiceContract;
-use InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract;
 
 /**
  * Class TagsService.
@@ -14,18 +13,16 @@ use InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract;
 class TagsService implements TagsServiceContract
 {
     /**
-     * @var TagsRepositoryContract
+     * @var
      */
-    private $repository;
+    public $repository;
 
     /**
      * TagsService constructor.
-     *
-     * @param TagsRepositoryContract $repository
      */
-    public function __construct(TagsRepositoryContract $repository)
+    public function __construct()
     {
-        $this->repository = $repository;
+        $this->repository = app()->make('InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract');
     }
 
     /**

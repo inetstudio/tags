@@ -16,7 +16,7 @@ class TagsRepository implements TagsRepositoryContract
     /**
      * @var TagModelContract
      */
-    private $model;
+    public $model;
 
     /**
      * TagsRepository constructor.
@@ -26,6 +26,16 @@ class TagsRepository implements TagsRepositoryContract
     public function __construct(TagModelContract $model)
     {
         $this->model = $model;
+    }
+
+    /**
+     * Получаем модель репозитория.
+     *
+     * @return TagModelContract
+     */
+    public function getModel()
+    {
+        return $this->model;
     }
 
     /**

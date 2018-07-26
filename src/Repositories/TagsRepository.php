@@ -39,6 +39,18 @@ class TagsRepository implements TagsRepositoryContract
     }
 
     /**
+     * Возвращаем пустой объект по id.
+     *
+     * @param int $id
+     *
+     * @return mixed
+     */
+    public function getEmptyObjectById(int $id)
+    {
+        return $this->model::select(['id'])->where('id', '=', $id)->first();
+    }
+
+    /**
      * Возвращаем объект по id, либо создаем новый.
      *
      * @param int $id

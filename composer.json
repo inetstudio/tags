@@ -20,8 +20,9 @@
     "extra": {
       "laravel": {
         "providers": [
-          "InetStudio\\Tags\\Providers\\TagsServiceProvider",
-          "InetStudio\\Tags\\Providers\\FormBuilderServiceProvider"
+          "InetStudio\\Tags\\Providers\\FormBuilderServiceProvider",
+          "InetStudio\\Tags\\Providers\\TagsBindingsServiceProvider",
+          "InetStudio\\Tags\\Providers\\TagsServiceProvider"
         ]
       }
     }

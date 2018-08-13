@@ -63,6 +63,18 @@ class TagsRepository implements TagsRepositoryContract
     }
 
     /**
+     * Возвращаем удаленный объект по id, либо пустой.
+     *
+     * @param int $id
+     *
+     * @return TagModelContract
+     */
+    public function getTrashedItemByID(int $id): TagModelContract
+    {
+        return $this->model::onlyTrashed()->find($id) ?? new $this->model;
+    }
+
+    /**
      * Возвращаем объекты по списку id.
      *
      * @param $ids

@@ -97,14 +97,13 @@ class TagsService implements TagsServiceContract
      */
     public function destroy(int $id): ?bool
     {
-        $className = get_class($this->repository->model);
-
         $result = $this->repository->destroy($id);
 
         if ($result) {
-            event(app()->makeWith('InetStudio\Tags\Contracts\Events\Back\DeleteTagEventContract', [
-                'className' => $className,
-                'id' => $id,
+            $trashedItem = $this->repository->getTrashedItemByID($id);
+
+            event(app()->makeWith('InetStudio\Tags\Contracts\Events\Back\ModifyTagEventContract', [
+                'object' => $trashedItem,
             ]));
         }
 

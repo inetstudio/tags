@@ -66,7 +66,7 @@ class TagObserver implements TagObserverContract
     }
 
     /**
-     * Событие "объект подписки удаляется".
+     * Событие "объект удаляется".
      *
      * @param TagModelContract $item
      */

@@ -15,16 +15,19 @@ class CreateTagsTables extends Migration
             $table->text('content')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('slug');
         });
 
         Schema::create('taggables', function (Blueprint $table) {
             $table->integer('tag_model_id')->unsigned();
-            $table->integer('taggable_id')->unsigned();
-            $table->string('taggable_type');
+            $table->morphs('taggable');
             $table->timestamps();
 
             $table->unique(['tag_model_id', 'taggable_id', 'taggable_type'], 'taggables_ids_type_unique');
-            $table->foreign('tag_model_id')->references('id')->on('tags')->onDelete('cascade')->onUpdate('cascade');;
+            $table->foreign('tag_model_id')->references('id')->on('tags')->onDelete('cascade')->onUpdate('cascade');
+
+            $table->index(['taggable_id', 'taggable_type']);
         });
     }
 

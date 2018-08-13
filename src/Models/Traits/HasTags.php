@@ -9,7 +9,7 @@ use InetStudio\Tags\Contracts\Models\TagModelContract;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
- * Trait Hastags.
+ * Trait HasTags.
  */
 trait HasTags
 {
@@ -319,7 +319,7 @@ trait HasTags
     }
 
     /**
-     * Set the given tag(ies) to the model.
+     * Set the given tag(s) to the model.
      *
      * @param int|string|array|\ArrayAccess|TagModelContract $tags
      * @param string $action

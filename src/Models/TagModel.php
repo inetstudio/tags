@@ -17,6 +17,9 @@ use InetStudio\Meta\Contracts\Models\Traits\MetableContract;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 
+/**
+ * Class TagModel.
+ */
 class TagModel extends Model implements TagModelContract, MetableContract, HasMediaConversions
 {
     use HasTags;

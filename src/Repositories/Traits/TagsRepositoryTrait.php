@@ -11,19 +11,14 @@ trait TagsRepositoryTrait
      * Получаем объекты по тегу.
      *
      * @param string $slug
-     * @param array $extColumns
-     * @param array $with
-     * @param bool $returnBuilder
+     * @param array $params
      *
      * @return mixed
      */
-    public function getItemsByTag(string $slug, array $extColumns = [], array $with = [], bool $returnBuilder = false)
+    public function getItemsByTag(string $slug, array $params = [])
     {
-        $builder = $this->getItemsQuery($extColumns, $with)->withTags($slug);
-
-        if ($returnBuilder) {
-            return $builder;
-        }
+        $builder = $this->getItemsQuery($params)
+            ->withTags($slug);
 
         return $builder->get();
     }

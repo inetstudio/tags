@@ -29,13 +29,13 @@ class TagsService implements TagsServiceContract
      * Получаем объект по slug.
      *
      * @param string $slug
-     * @param bool $returnBuilder
+     * @param array $params
      *
      * @return mixed
      */
-    public function getTagBySlug(string $slug, bool $returnBuilder = false)
+    public function getTagBySlug(string $slug, array $params = [])
     {
-        return $this->repository->getItemBySlug($slug, $returnBuilder);
+        return $this->repository->getItemBySlug($slug, $params);
     }
 
     /**
@@ -47,7 +47,9 @@ class TagsService implements TagsServiceContract
      */
     public function getTagsByMaterials(Collection $materials): Collection
     {
-        return $this->repository->getItemsByMaterials($materials);
+        return $materials->map(function ($item) {
+            return (method_exists($item, 'tags')) ? $item->tags : [];
+        })->filter()->collapse()->unique('id');
     }
 
     /**

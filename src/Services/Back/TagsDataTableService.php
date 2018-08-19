@@ -49,7 +49,9 @@ class TagsDataTableService extends DataTable implements TagsDataTableServiceCont
      */
     public function query()
     {
-        $query = $this->repository->getAllItems(true)->withCount('taggables as taggables_count');
+        $query = $this->repository->getItemsQuery([
+            'columns' => ['created_at', 'updated_at'],
+        ])->withCount('taggables as taggables_count');
 
         return $query;
     }

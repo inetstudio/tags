@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Session;
 use League\Fractal\Serializer\DataArraySerializer;
 use InetStudio\Tags\Contracts\Models\TagModelContract;
 use InetStudio\Tags\Contracts\Services\Back\TagsServiceContract;
-use InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract;
 use InetStudio\Tags\Contracts\Http\Requests\Back\SaveTagRequestContract;
 
 /**
@@ -16,18 +15,16 @@ use InetStudio\Tags\Contracts\Http\Requests\Back\SaveTagRequestContract;
 class TagsService implements TagsServiceContract
 {
     /**
-     * @var TagsRepositoryContract
+     * @var
      */
-    private $repository;
+    public $repository;
 
     /**
      * TagsService constructor.
-     *
-     * @param TagsRepositoryContract $repository
      */
-    public function __construct(TagsRepositoryContract $repository)
+    public function __construct()
     {
-        $this->repository = $repository;
+        $this->repository = app()->make('InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract');
     }
 
     /**
@@ -46,13 +43,13 @@ class TagsService implements TagsServiceContract
      * Получаем объекты по списку id.
      *
      * @param array|int $ids
-     * @param bool $returnBuilder
+     * @param array $params
      *
      * @return mixed
      */
-    public function getTagsByIDs($ids, bool $returnBuilder = false)
+    public function getTagsByIDs($ids, array $params = [])
     {
-        return $this->repository->getItemsByIDs($ids, $returnBuilder);
+        return $this->repository->getItemsByIDs($ids, $params);
     }
 
     /**
@@ -66,7 +63,7 @@ class TagsService implements TagsServiceContract
     public function save(SaveTagRequestContract $request, int $id): TagModelContract
     {
         $action = ($id) ? 'отредактирован' : 'создан';
-        $item = $this->repository->save($request, $id);
+        $item = $this->repository->save($request->only($this->repository->getModel()->getFillable()), $id);
 
         app()->make('InetStudio\Meta\Contracts\Services\Back\MetaServiceContract')
             ->attachToObject($request, $item);

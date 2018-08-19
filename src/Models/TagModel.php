@@ -69,6 +69,46 @@ class TagModel extends Model implements TagModelContract, MetableContract, HasMe
     protected $revisionCreationsEnabled = true;
 
     /**
+     * Сеттер атрибута name.
+     *
+     * @param $value
+     */
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strip_tags($value);
+    }
+
+    /**
+     * Сеттер атрибута title.
+     *
+     * @param $value
+     */
+    public function setTitleAttribute($value)
+    {
+        $this->attributes['title'] = strip_tags($value);
+    }
+
+    /**
+     * Сеттер атрибута slug.
+     *
+     * @param $value
+     */
+    public function setSlugAttribute($value)
+    {
+        $this->attributes['slug'] = strip_tags($value);
+    }
+
+    /**
+     * Сеттер атрибута content.
+     *
+     * @param $value
+     */
+    public function setContentAttribute($value)
+    {
+        $this->attributes['content'] = trim(str_replace("&nbsp;", ' ', (isset($value['text'])) ? $value['text'] : (! is_array($value) ? $value : '')));
+    }
+
+    /**
      * Отношение "один ко многим" с моделью "ссылок" на материалы.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

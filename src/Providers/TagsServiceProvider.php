@@ -2,6 +2,7 @@
 
 namespace InetStudio\Tags\Providers;
 
+use Collective\Html\FormBuilder;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -20,6 +21,7 @@ class TagsServiceProvider extends ServiceProvider
         $this->registerPublishes();
         $this->registerRoutes();
         $this->registerViews();
+        $this->registerFormComponents();
     }
 
     /**
@@ -80,5 +82,15 @@ class TagsServiceProvider extends ServiceProvider
     protected function registerViews(): void
     {
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'admin.module.tags');
+    }
+
+    /**
+     * Регистрация компонентов форм.
+     *
+     * @return void
+     */
+    protected function registerFormComponents()
+    {
+        FormBuilder::component('tags', 'admin.module.tags::back.forms.fields.tags', ['name' => null, 'value' => null, 'attributes' => null]);
     }
 }

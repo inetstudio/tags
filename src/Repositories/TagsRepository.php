@@ -2,7 +2,6 @@
 
 namespace InetStudio\Tags\Repositories;
 
-use Illuminate\Support\Collection;
 use InetStudio\AdminPanel\Repositories\BaseRepository;
 use InetStudio\Tags\Contracts\Models\TagModelContract;
 use InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract;

@@ -9,8 +9,8 @@ return [
 
     'tags' => [
         'driver' => 'local',
-        'root' => storage_path('app/public/tags/'),
-        'url' => env('APP_URL').'/storage/tags/',
+        'root' => storage_path('app/public/tags'),
+        'url' => env('APP_URL').'/storage/tags',
         'visibility' => 'public',
     ],
 

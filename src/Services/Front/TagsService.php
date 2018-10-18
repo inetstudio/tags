@@ -59,7 +59,9 @@ class TagsService implements TagsServiceContract
      */
     public function getSiteMapItems(): array
     {
-        $items = $this->repository->getAllItems();
+        $items = $this->repository->getAllItems([
+            'columns' => ['updated_at'],
+        ]);
 
         $resource = app()->make('InetStudio\Tags\Contracts\Transformers\Front\TagsSiteMapTransformerContract')
             ->transformCollection($items);

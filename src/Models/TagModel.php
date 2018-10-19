@@ -8,19 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use InetStudio\Meta\Models\Traits\Metable;
 use InetStudio\Tags\Models\Traits\HasTags;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use InetStudio\Uploads\Models\Traits\HasImages;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use InetStudio\Tags\Contracts\Models\TagModelContract;
 use InetStudio\Meta\Contracts\Models\Traits\MetableContract;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 
 /**
  * Class TagModel.
  */
-class TagModel extends Model implements TagModelContract, MetableContract, HasMediaConversions
+class TagModel extends Model implements TagModelContract, MetableContract, HasMedia
 {
     use HasTags;
     use Metable;

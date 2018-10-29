@@ -15,6 +15,21 @@ use InetStudio\Tags\Contracts\Http\Responses\Back\Utility\SuggestionsResponseCon
 class TagsUtilityController extends Controller implements TagsUtilityControllerContract
 {
     /**
+     * Используемые сервисы.
+     *
+     * @var array
+     */
+    private $services;
+
+    /**
+     * TagsUtilityController constructor.
+     */
+    public function __construct()
+    {
+        $this->services['tags'] = app()->make('InetStudio\Tags\Contracts\Services\Back\TagsServiceContract');
+    }
+
+    /**
      * Получаем slug для модели по строке.
      *
      * @param Request $request
@@ -23,8 +38,12 @@ class TagsUtilityController extends Controller implements TagsUtilityControllerC
      */
     public function getSlug(Request $request): SlugResponseContract
     {
+        $id = (int) $request->get('id');
         $name = $request->get('name');
-        $slug = ($name) ? SlugService::createSlug(app()->make('InetStudio\Tags\Contracts\Models\TagModelContract'), 'slug', $name) : '';
+
+        $model = $this->services['tags']->getTagObject($id);
+
+        $slug = ($name) ? SlugService::createSlug($model, 'slug', $name) : '';
 
         return app()->makeWith('InetStudio\Tags\Contracts\Http\Responses\Back\Utility\SlugResponseContract', [
             'slug' => $slug,

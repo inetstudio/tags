@@ -141,6 +141,7 @@ class TagModel extends Model implements TagModelContract, MetableContract, HasMe
             'slug' => [
                 'source' => 'name',
                 'unique' => true,
+                'includeTrashed' => true,
             ],
         ];
     }

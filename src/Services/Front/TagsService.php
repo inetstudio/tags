@@ -5,37 +5,23 @@ namespace InetStudio\Tags\Services\Front;
 use League\Fractal\Manager;
 use Illuminate\Support\Collection;
 use League\Fractal\Serializer\DataArraySerializer;
+use InetStudio\AdminPanel\Services\Front\BaseService;
 use InetStudio\Tags\Contracts\Services\Front\TagsServiceContract;
+use InetStudio\AdminPanel\Services\Front\Traits\SlugsServiceTrait;
 
 /**
  * Class TagsService.
  */
-class TagsService implements TagsServiceContract
+class TagsService extends BaseService implements TagsServiceContract
 {
-    /**
-     * @var
-     */
-    public $repository;
+    use SlugsServiceTrait;
 
     /**
      * TagsService constructor.
      */
     public function __construct()
     {
-        $this->repository = app()->make('InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract');
-    }
-
-    /**
-     * Получаем объект по slug.
-     *
-     * @param string $slug
-     * @param array $params
-     *
-     * @return mixed
-     */
-    public function getTagBySlug(string $slug, array $params = [])
-    {
-        return $this->repository->getItemBySlug($slug, $params);
+        parent::__construct(app()->make('InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract'));
     }
 
     /**
@@ -45,10 +31,10 @@ class TagsService implements TagsServiceContract
      *
      * @return Collection
      */
-    public function getTagsByMaterials(Collection $materials): Collection
+    public function getItemsByMaterials(Collection $materials): Collection
     {
         return $materials->map(function ($item) {
-            return (method_exists($item, 'tags')) ? $item->tags : [];
+            return (isset($item['tags'])) ? $item['tags'] : [];
         })->filter()->collapse()->unique('id');
     }
 

@@ -5,16 +5,14 @@ namespace InetStudio\Tags\Repositories;
 use InetStudio\AdminPanel\Repositories\BaseRepository;
 use InetStudio\Tags\Contracts\Models\TagModelContract;
 use InetStudio\Tags\Contracts\Repositories\TagsRepositoryContract;
+use InetStudio\AdminPanel\Repositories\Traits\SlugsRepositoryTrait;
 
 /**
  * Class TagsRepository.
  */
 class TagsRepository extends BaseRepository implements TagsRepositoryContract
 {
-    /**
-     * @var TagModelContract
-     */
-    public $model;
+    use SlugsRepositoryTrait;
 
     /**
      * TagsRepository constructor.
@@ -39,23 +37,5 @@ class TagsRepository extends BaseRepository implements TagsRepositoryContract
                 $query->select(['id', 'name', 'slug']);
             },
         ];
-    }
-
-    /**
-     * Получаем объект по slug.
-     *
-     * @param string $slug
-     * @param array $params
-     *
-     * @return mixed
-     */
-    public function getItemBySlug(string $slug, array $params = [])
-    {
-        $builder = $this->getItemsQuery($params)
-            ->whereSlug($slug);
-
-        $item = $builder->first();
-
-        return $item;
     }
 }

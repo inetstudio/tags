@@ -3,15 +3,16 @@
 namespace InetStudio\Tags\Models;
 
 use Cocur\Slugify\Slugify;
+use Illuminate\Support\Arr;
 use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 use Cviebrock\EloquentSluggable\Sluggable;
 use InetStudio\Meta\Models\Traits\Metable;
 use InetStudio\Tags\Models\Traits\HasTags;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use InetStudio\Uploads\Models\Traits\HasImages;
-use Venturecraft\Revisionable\RevisionableTrait;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use InetStudio\Tags\Contracts\Models\TagModelContract;
 use InetStudio\Meta\Contracts\Models\Traits\MetableContract;
@@ -20,7 +21,7 @@ use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 /**
  * Class TagModel.
  */
-class TagModel extends Model implements TagModelContract, MetableContract, HasMedia
+class TagModel extends Model implements TagModelContract, MetableContract, HasMedia, Auditable
 {
     use HasTags;
     use Metable;
@@ -28,7 +29,7 @@ class TagModel extends Model implements TagModelContract, MetableContract, HasMe
     use HasImages;
     use Searchable;
     use SoftDeletes;
-    use RevisionableTrait;
+    use \OwenIt\Auditing\Auditable;
     use SluggableScopeHelpers;
     use HasSimpleCountersTrait;
 
@@ -66,7 +67,12 @@ class TagModel extends Model implements TagModelContract, MetableContract, HasMe
         'deleted_at',
     ];
 
-    protected $revisionCreationsEnabled = true;
+    /**
+     * Should the timestamps be audited?
+     *
+     * @var bool
+     */
+    protected $auditTimestamps = true;
 
     /**
      * Сеттер атрибута name.
@@ -125,7 +131,7 @@ class TagModel extends Model implements TagModelContract, MetableContract, HasMe
      */
     public function toSearchableArray()
     {
-        $arr = array_only($this->toArray(), ['id', 'name', 'title', 'content']);
+        $arr = Arr::only($this->toArray(), ['id', 'name', 'title', 'content']);
 
         return $arr;
     }

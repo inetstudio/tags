@@ -1,7 +1,7 @@
 @extends('admin::back.layouts.app')
 
 @php
-    $title = ($item->id) ? 'Редактирование тега' : 'Добавление тега';
+    $title = ($item->id) ? 'Редактирование тега' : 'Создание тега';
 @endphp
 
 @section('title', $title)
@@ -12,115 +12,124 @@
         @include('admin.module.tags::back.partials.breadcrumbs.form')
     @endpush
 
-    <div class="row m-sm">
-        <a class="btn btn-white" href="{{ route('back.tags.index') }}">
-            <i class="fa fa-arrow-left"></i> Вернуться назад
-        </a>
-        @if ($item->id && $item->href)
-            <a class="btn btn-white" href="{{ $item->href }}" target="_blank">
-                <i class="fa fa-eye"></i> Посмотреть на сайте
-            </a>
-        @endif
-    </div>
-
     <div class="wrapper wrapper-content">
+        <div class="ibox">
+            <div class="ibox-title">
+                <a class="btn btn-sm btn-white m-r-xs" href="{{ route('back.tags.index') }}">
+                    <i class="fa fa-arrow-left"></i> Вернуться назад
+                </a>
+                @if ($item->id && $item->href)
+                    <a class="btn btn-sm btn-white" href="{{ $item->href }}" target="_blank">
+                        <i class="fa fa-eye"></i> Посмотреть на сайте
+                    </a>
+                @endif
+            </div>
+        </div>
 
         {!! Form::info() !!}
 
-        {!! Form::open(['url' => (! $item->id) ? route('back.tags.store') : route('back.tags.update', [$item->id]), 'id' => 'mainForm', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) !!}
+        {!! Form::open(['url' => (! $item->id) ? route('back.tags.store') : route('back.tags.update', [$item->id]), 'id' => 'mainForm', 'enctype' => 'multipart/form-data']) !!}
 
             @if ($item->id)
                 {{ method_field('PUT') }}
             @endif
 
-            {!! Form::hidden('tag_id', (! $item->id) ? "" : $item->id) !!}
+            {!! Form::hidden('tag_id', (! $item->id) ? '' : $item->id, ['id' => 'object-id']) !!}
 
-            {!! Form::meta('', $item) !!}
+            {!! Form::hidden('tag_type', get_class($item), ['id' => 'object-type']) !!}
 
-            {!! Form::social_meta('', $item) !!}
+            <div class="ibox">
+                <div class="ibox-title">
+                    {!! Form::buttons('', '', ['back' => 'back.tags.index']) !!}
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="panel-group float-e-margins" id="mainAccordion">
+                                {!! Form::meta('', $item) !!}
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="panel-group float-e-margins" id="mainAccordion">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h5 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#mainAccordion" href="#collapseMain" aria-expanded="true">Основная информация</a>
-                                </h5>
-                            </div>
-                            <div id="collapseMain" class="panel-collapse collapse in" aria-expanded="true">
-                                <div class="panel-body">
+                                {!! Form::social_meta('', $item) !!}
 
-                                    {!! Form::string('name', $item->name, [
-                                        'label' => [
-                                            'title' => 'Название',
-                                            'class' => 'col-sm-2 control-label',
-                                        ],
-                                        'field' => [
-                                            'class' => 'form-control slugify',
-                                            'data-slug-url' => route('back.tags.getSlug'),
-                                            'data-slug-target' => 'slug',
-                                        ],
-                                    ]) !!}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h5 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#mainAccordion" href="#collapseMain" aria-expanded="true">Основная информация</a>
+                                        </h5>
+                                    </div>
+                                    <div id="collapseMain" class="collapse show" aria-expanded="true">
+                                        <div class="panel-body">
 
-                                    {!! Form::string('slug', $item->slug, [
-                                        'label' => [
-                                            'title' => 'URL',
-                                            'class' => 'col-sm-2 control-label',
-                                        ],
-                                        'field' => [
-                                            'class' => 'form-control slugify',
-                                            'data-slug-url' => route('back.tags.getSlug'),
-                                            'data-slug-target' => 'slug',
-                                        ],
-                                    ]) !!}
-
-                                    {!! Form::string('title', $item->title, [
-                                        'label' => [
-                                            'title' => 'Заголовок',
-                                        ],
-                                    ]) !!}
-
-                                    {!! Form::wysiwyg('content', $item->content, [
-                                        'label' => [
-                                            'title' => 'Содержимое',
-                                        ],
-                                        'field' => [
-                                            'class' => 'tinymce',
-                                            'id' => 'content',
-                                            'hasImages' => true,
-                                        ],
-                                        'images' => [
-                                            'media' => $item->getMedia('content'),
-                                            'fields' => [
-                                                [
-                                                    'title' => 'Описание',
-                                                    'name' => 'description',
+                                            {!! Form::string('name', $item->name, [
+                                                'label' => [
+                                                    'title' => 'Название',
                                                 ],
-                                                [
-                                                    'title' => 'Copyright',
-                                                    'name' => 'copyright',
+                                                'field' => [
+                                                    'class' => 'form-control slugify',
+                                                    'data-slug-url' => route('back.tags.getSlug'),
+                                                    'data-slug-target' => 'slug',
                                                 ],
-                                                [
-                                                    'title' => 'Alt',
-                                                    'name' => 'alt',
+                                            ]) !!}
+
+                                            {!! Form::string('slug', $item->slug, [
+                                                'label' => [
+                                                    'title' => 'URL',
                                                 ],
-                                            ],
-                                        ],
-                                    ]) !!}
+                                                'field' => [
+                                                    'class' => 'form-control slugify',
+                                                    'data-slug-url' => route('back.tags.getSlug'),
+                                                    'data-slug-target' => 'slug',
+                                                ],
+                                            ]) !!}
 
-                                    {!! Form::tags('', $item, [
-                                        'exclude' => [$item->id],
-                                    ]) !!}
+                                            {!! Form::string('title', $item->title, [
+                                                'label' => [
+                                                    'title' => 'Заголовок',
+                                                ],
+                                            ]) !!}
 
+                                            {!! Form::wysiwyg('content', $item->content, [
+                                                'label' => [
+                                                    'title' => 'Содержимое',
+                                                ],
+                                                'field' => [
+                                                    'class' => 'tinymce',
+                                                    'id' => 'content',
+                                                    'hasImages' => true,
+                                                ],
+                                                'images' => [
+                                                    'media' => $item->getMedia('content'),
+                                                    'fields' => [
+                                                        [
+                                                            'title' => 'Описание',
+                                                            'name' => 'description',
+                                                        ],
+                                                        [
+                                                            'title' => 'Copyright',
+                                                            'name' => 'copyright',
+                                                        ],
+                                                        [
+                                                            'title' => 'Alt',
+                                                            'name' => 'alt',
+                                                        ],
+                                                    ],
+                                                ],
+                                            ]) !!}
+
+                                            {!! Form::tags('', $item, [
+                                                'exclude' => [$item->id],
+                                            ]) !!}
+
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="ibox-footer">
+                    {!! Form::buttons('', '', ['back' => 'back.tags.index']) !!}
+                </div>
             </div>
-
-            {!! Form::buttons('', '', ['back' => 'back.tags.index']) !!}
 
         {!! Form::close()!!}
     </div>

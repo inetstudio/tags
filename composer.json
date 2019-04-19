@@ -1,25 +1,30 @@
 {
-    "name": "inetstudio/tags",
-    "description": "Package for tags",
-    "homepage": "https://github.com/inetstudio/tags",
-    "license": "MIT",
-    "authors": [
-      {
-        "name": "Konstantin Bukin",
-        "email": "bukin@inetstudio.ru"
-      }
-    ],
-    "autoload": {
-      "psr-4": {
-        "InetStudio\\Tags\\": "src/"
-      }
-    },
-    "extra": {
-      "laravel": {
-        "providers": [
-          "InetStudio\\Tags\\Providers\\TagsBindingsServiceProvider",
-          "InetStudio\\Tags\\Providers\\TagsServiceProvider"
-        ]
-      }
+  "name": "inetstudio/tags",
+  "description": "Package for tags",
+  "homepage": "https://github.com/inetstudio/tags",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Konstantin Bukin",
+      "email": "bukin@inetstudio.ru"
     }
+  ],
+  "require": {
+    "inetstudio/admin-panel": "1.8.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "InetStudio\\TagsPackage\\": "package/src",
+      "InetStudio\\TagsPackage\\Tags\\": "entities/tags/src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "InetStudio\\TagsPackage\\Providers\\ServiceProvider",
+        "InetStudio\\TagsPackage\\Tags\\Providers\\BindingsServiceProvider",
+        "InetStudio\\TagsPackage\\Tags\\Providers\\ServiceProvider"
+      ]
+    }
+  }
 }

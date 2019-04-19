@@ -27,7 +27,7 @@ class IndexResponse implements IndexResponseContract
 
     /**
      * Возвращаем ответ при открытии списка объектов.
-     * 
+     *
      * @param  Request  $request
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View

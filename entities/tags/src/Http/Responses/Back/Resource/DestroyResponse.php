@@ -27,7 +27,7 @@ class DestroyResponse implements DestroyResponseContract
 
     /**
      * Возвращаем ответ при удалении объекта.
-     * 
+     *
      * @param  Request  $request
      *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response

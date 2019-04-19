@@ -28,7 +28,7 @@ class SaveResponse implements SaveResponseContract
 
     /**
      * Возвращаем ответ при сохранении объекта.
-     * 
+     *
      * @param  Request  $request
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
@@ -36,9 +36,9 @@ class SaveResponse implements SaveResponseContract
     public function toResponse($request)
     {
         $item = $this->item->fresh();
-        
+
         return response()->redirectToRoute(
-            'back.tags.edit', 
+            'back.tags.edit',
             [
                 $item['id'],
             ]

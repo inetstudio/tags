@@ -66,7 +66,7 @@ class ItemsService extends BaseService implements ItemsServiceContract
     }
 
     /**
-     * Присваиваем классификаторы объекту.
+     * Присваиваем теги объекту.
      *
      * @param $tags
      *
@@ -83,7 +83,7 @@ class ItemsService extends BaseService implements ItemsServiceContract
         if (! empty($tags)) {
             $item->syncTags($this->model::whereIn('id', $tags)->get());
         } else {
-            $item->detachTags($item->persons);
+            $item->detachTags($item->tags);
         }
     }
 }

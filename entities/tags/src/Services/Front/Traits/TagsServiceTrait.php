@@ -2,8 +2,6 @@
 
 namespace InetStudio\TagsPackage\Tags\Services\Front\Traits;
 
-use Illuminate\Support\Collection;
-
 /**
  * Trait TagsServiceTrait.
  */
@@ -15,10 +13,12 @@ trait TagsServiceTrait
      * @param  string  $slug
      * @param  array  $params
      *
-     * @return Collection
+     * @return mixed
      */
-    public function getItemsByTag(string $slug, array $params = []): Collection
+    public function getItemsByTag(string $slug, array $params = [])
     {
-        return $this->model->buildQuery($params)->withTags($slug)->get();
+        return $this->model
+            ->buildQuery($params)
+            ->withTags($slug);
     }
 }

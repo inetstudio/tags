@@ -42,8 +42,9 @@ class ItemsService extends BaseService implements ItemsServiceContract
         $itemData = Arr::only($data, $this->model->getFillable());
         $item = $this->saveModel($itemData, $id);
 
-        app()->make('InetStudio\Meta\Contracts\Services\Back\MetaServiceContract')
-            ->attachToObject(request(), $item);
+        $metaData = Arr::get($data, 'meta', []);
+        app()->make('InetStudio\MetaPackage\Meta\Contracts\Services\Back\ItemsServiceContract')
+            ->attachToObject($metaData, $item);
 
         $images = (config('tags.images.conversions.tag')) ? array_keys(config('tags.images.conversions.tag')) : [];
         app()->make('InetStudio\Uploads\Contracts\Services\Back\ImagesServiceContract')
@@ -69,7 +70,6 @@ class ItemsService extends BaseService implements ItemsServiceContract
      * Присваиваем теги объекту.
      *
      * @param $tags
-     *
      * @param $item
      */
     public function attachToObject($tags, $item): void

@@ -7,11 +7,11 @@ use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
-use InetStudio\Meta\Models\Traits\Metable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use InetStudio\Uploads\Models\Traits\HasImages;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use InetStudio\MetaPackage\Meta\Models\Traits\HasMeta;
 use InetStudio\TagsPackage\Tags\Models\Traits\HasTags;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use InetStudio\AdminPanel\Base\Models\Traits\SluggableTrait;
@@ -26,7 +26,7 @@ use InetStudio\AdminPanel\Base\Models\Traits\Scopes\BuildQueryScopeTrait;
 class TagModel extends Model implements TagModelContract
 {
     use HasTags;
-    use Metable;
+    use HasMeta;
     use Auditable;
     use Sluggable;
     use HasImages;

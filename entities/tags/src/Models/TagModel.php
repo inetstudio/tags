@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use InetStudio\AdminPanel\Base\Models\Traits\SluggableTrait;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use InetStudio\TagsPackage\Tags\Contracts\Models\TagModelContract;
-use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 use InetStudio\AdminPanel\Base\Models\Traits\Scopes\BuildQueryScopeTrait;
+use InetStudio\SimpleCounters\Counters\Models\Traits\HasSimpleCountersTrait;
 
 /**
  * Class TagModel.

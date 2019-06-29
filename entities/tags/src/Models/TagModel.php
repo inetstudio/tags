@@ -39,7 +39,7 @@ class TagModel extends Model implements TagModelContract
     /**
      * Тип сущности.
      */
-    const ENTITY_TYPE = 'person';
+    const ENTITY_TYPE = 'tag';
 
     /**
      * Часть слага для сущности.

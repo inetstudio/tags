@@ -119,7 +119,7 @@ trait HasTags
     public function scopeWithAllTags(Builder $query, $tags, string $column = 'slug'): Builder
     {
         $tags = $this->isTagsStringBased($tags)
-            ? $tags : $this->hydrateTags($tags)->pluck($column);
+            ? $tags : $this->hydrateTags($tags)->pluck($column)->toArray();
 
         collect($tags)->each(
             function ($tag) use ($query, $column) {
@@ -149,7 +149,7 @@ trait HasTags
     public function scopeWithAnyTags(Builder $query, $tags, string $column = 'slug'): Builder
     {
         $tags = $this->isTagsStringBased($tags)
-            ? $tags : $this->hydrateTags($tags)->pluck($column);
+            ? $tags : $this->hydrateTags($tags)->pluck($column)->toArray();
 
         return $query->whereHas(
             'tags',
@@ -189,7 +189,7 @@ trait HasTags
     public function scopeWithoutTags(Builder $query, $tags, string $column = 'slug'): Builder
     {
         $tags = $this->isTagsStringBased($tags)
-            ? $tags : $this->hydrateTags($tags)->pluck($column);
+            ? $tags : $this->hydrateTags($tags)->pluck($column)->toArray();
 
         return $query->whereDoesntHave(
             'tags',

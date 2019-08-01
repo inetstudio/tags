@@ -59,4 +59,25 @@ return [
             ],
         ],
     ],
+
+    /*
+     * Настройки связей.
+     */
+
+    'relationships' => [
+        'articles' => [
+            'relationship' => 'morphedByMany',
+            'model' => 'InetStudio\Articles\Contracts\Models\ArticleModelContract',
+            'params' => [
+                'taggable',
+            ],
+        ],
+        'ingredients' => [
+            'relationship' => 'morphedByMany',
+            'model' => 'InetStudio\IngredientsPackage\Ingredients\Contracts\Models\IngredientModelContract',
+            'params' => [
+                'taggable',
+            ],
+        ],
+    ],
 ];

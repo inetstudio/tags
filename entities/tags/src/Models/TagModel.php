@@ -5,6 +5,7 @@ namespace InetStudio\TagsPackage\Tags\Models;
 use Illuminate\Support\Arr;
 use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Auditable;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -243,5 +244,70 @@ class TagModel extends Model implements TagModelContract
             get_class($taggableModel),
             'tag_model_id'
         );
+    }
+
+    /**
+     * Handle dynamic method calls into the model.
+     *
+     * @param  string  $method
+     * @param  array  $parameters
+     *
+     * @return mixed
+     *
+     * @throws BindingResolutionException
+     */
+    public function __call($method, $parameters) {
+        $config = implode( '.', ['tags.relationships', $method]);
+
+        if (Config::has($config)) {
+            $data = Config::get($config);
+
+            $model = isset($data['model']) ? [app()->make($data['model'])] : [];
+            $params = $data['params'] ?? [];
+
+            return call_user_func_array([$this, $data['relationship']], array_merge($model, $params));
+        }
+
+        return parent::__call($method, $parameters);
+    }
+
+    /**
+     * Get an attribute from the model.
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getAttribute($key)
+    {
+        $config = implode( '.', ['tags.relationships', $key]);
+
+        if (Config::has($config)) {
+            return $this->getRelationValue($key);
+        }
+
+        return parent::getAttribute($key);
+    }
+
+    /**
+     * Get a relationship.
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getRelationValue($key)
+    {
+        if ($this->relationLoaded($key)) {
+            return $this->relations[$key];
+        }
+
+        $config = implode( '.', ['tags.relationships', $key]);
+
+        if (Config::has($config)) {
+            return $this->getRelationshipFromMethod($key);
+        }
+
+        return parent::getRelationValue($key);
     }
 }

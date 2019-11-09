@@ -117,7 +117,6 @@ class TagModel extends Model implements TagModelContract
             'slug' => [
                 'source' => 'name',
                 'unique' => true,
-                'includeTrashed' => true,
             ],
         ];
     }

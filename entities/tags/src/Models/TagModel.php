@@ -255,8 +255,9 @@ class TagModel extends Model implements TagModelContract
      *
      * @throws BindingResolutionException
      */
-    public function __call($method, $parameters) {
-        $config = implode( '.', ['tags.relationships', $method]);
+    public function __call($method, $parameters)
+    {
+        $config = implode('.', ['tags.relationships', $method]);
 
         if (Config::has($config)) {
             $data = Config::get($config);
@@ -279,7 +280,7 @@ class TagModel extends Model implements TagModelContract
      */
     public function getAttribute($key)
     {
-        $config = implode( '.', ['tags.relationships', $key]);
+        $config = implode('.', ['tags.relationships', $key]);
 
         if (Config::has($config)) {
             return $this->getRelationValue($key);
@@ -301,7 +302,7 @@ class TagModel extends Model implements TagModelContract
             return $this->relations[$key];
         }
 
-        $config = implode( '.', ['tags.relationships', $key]);
+        $config = implode('.', ['tags.relationships', $key]);
 
         if (Config::has($config)) {
             return $this->getRelationshipFromMethod($key);

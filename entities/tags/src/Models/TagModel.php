@@ -149,6 +149,8 @@ class TagModel extends Model implements TagModelContract
                         'collection_name',
                         'file_name',
                         'disk',
+                        'conversions_disk',
+                        'uuid',
                         'mime_type',
                         'custom_properties',
                         'responsive_images',

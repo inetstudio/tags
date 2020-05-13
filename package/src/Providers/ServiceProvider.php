@@ -28,7 +28,7 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->commands(
             [
-                'InetStudio\PersonsPackage\Console\Commands\SetupCommand',
+                'InetStudio\TagsPackage\Console\Commands\SetupCommand',
             ]
         );
     }

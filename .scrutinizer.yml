@@ -1,6 +1,6 @@
 build:
   environment:
-    php: 7.2.13
+    php: 7.4.4
   nodes:
     analysis:
       tests:
@@ -10,7 +10,6 @@ build:
 filter:
   excluded_paths:
     - 'entities/tags/resources/'
-    - 'package/resources/'
 checks:
   php:
     verify_property_names: true

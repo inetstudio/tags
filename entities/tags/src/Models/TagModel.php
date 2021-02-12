@@ -2,6 +2,7 @@
 
 namespace InetStudio\TagsPackage\Tags\Models;
 
+use Cocur\Slugify\Slugify;
 use Illuminate\Support\Arr;
 use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Auditable;
@@ -14,8 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use InetStudio\MetaPackage\Meta\Models\Traits\HasMeta;
 use InetStudio\TagsPackage\Tags\Models\Traits\HasTags;
+use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use InetStudio\AdminPanel\Base\Models\Traits\SluggableTrait;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use InetStudio\TagsPackage\Tags\Contracts\Models\TagModelContract;
 use InetStudio\AdminPanel\Base\Models\Traits\Scopes\BuildQueryScopeTrait;
@@ -33,8 +34,8 @@ class TagModel extends Model implements TagModelContract
     use HasImages;
     use Searchable;
     use SoftDeletes;
-    use SluggableTrait;
     use BuildQueryScopeTrait;
+    use SluggableScopeHelpers;
     use HasSimpleCountersTrait;
 
     /**
@@ -311,5 +312,48 @@ class TagModel extends Model implements TagModelContract
         }
 
         return parent::getRelationValue($key);
+    }
+
+    public function customizeSlugEngine(Slugify $engine)
+    {
+        $rules = [
+            'а' => 'a',
+            'б' => 'b',
+            'в' => 'v',
+            'г' => 'g',
+            'д' => 'd',
+            'е' => 'e',
+            'ё' => 'jo',
+            'ж' => 'zh',
+            'з' => 'z',
+            'и' => 'i',
+            'й' => 'j',
+            'к' => 'k',
+            'л' => 'l',
+            'м' => 'm',
+            'н' => 'n',
+            'о' => 'o',
+            'п' => 'p',
+            'р' => 'r',
+            'с' => 's',
+            'т' => 't',
+            'у' => 'u',
+            'ф' => 'f',
+            'х' => 'h',
+            'ц' => 'c',
+            'ч' => 'ch',
+            'ш' => 'sh',
+            'щ' => 'shh',
+            'ъ' => '',
+            'ы' => 'y',
+            'ь' => '',
+            'э' => 'je',
+            'ю' => 'ju',
+            'я' => 'ja',
+        ];
+
+        $engine->addRules($rules);
+
+        return $engine;
     }
 }

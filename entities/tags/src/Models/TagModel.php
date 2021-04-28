@@ -112,7 +112,7 @@ class TagModel extends Model implements TagModelContract
      *
      * @return array
      */
-    public function sluggable()
+    public function sluggable(): array
     {
         return [
             'slug' => [

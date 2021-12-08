@@ -4,28 +4,12 @@ namespace InetStudio\TagsPackage\Tags\Console\Commands;
 
 use InetStudio\AdminPanel\Base\Console\Commands\BaseSetupCommand;
 
-/**
- * Class SetupCommand.
- */
 class SetupCommand extends BaseSetupCommand
 {
-    /**
-     * Имя команды.
-     *
-     * @var string
-     */
     protected $name = 'inetstudio:tags-package:tags:setup';
 
-    /**
-     * Описание команды.
-     *
-     * @var string
-     */
     protected $description = 'Setup tags package';
 
-    /**
-     * Инициализация команд.
-     */
     protected function initCommands(): void
     {
         $this->calls = [

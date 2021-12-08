@@ -4,28 +4,12 @@ namespace InetStudio\TagsPackage\Tags\Console\Commands;
 
 use Illuminate\Console\Command;
 
-/**
- * Class CreateFoldersCommand.
- */
 class CreateFoldersCommand extends Command
 {
-    /**
-     * Имя команды.
-     *
-     * @var string
-     */
     protected $name = 'inetstudio:tags-package:tags:folders';
 
-    /**
-     * Описание команды.
-     *
-     * @var string
-     */
     protected $description = 'Create package folders';
 
-    /**
-     * Запуск команды.
-     */
     public function handle(): void
     {
         $folders = [
@@ -40,11 +24,6 @@ class CreateFoldersCommand extends Command
         }
     }
 
-    /**
-     * Создание директории.
-     *
-     * @param $path
-     */
     protected function createDir($path): void
     {
         if (is_dir($path)) {

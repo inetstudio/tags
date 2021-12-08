@@ -27,6 +27,12 @@
         "InetStudio\\TagsPackage\\Tags\\Providers\\BindingsServiceProvider",
         "InetStudio\\TagsPackage\\Tags\\Providers\\ServiceProvider"
       ]
+    },
+    "inetstudio": {
+      "entities": [
+        "tags"
+      ],
+      "package": "tags-package"
     }
   }
 }

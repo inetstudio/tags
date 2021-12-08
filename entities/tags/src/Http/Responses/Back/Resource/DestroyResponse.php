@@ -2,41 +2,27 @@
 
 namespace InetStudio\TagsPackage\Tags\Http\Responses\Back\Resource;
 
-use Illuminate\Http\Request;
+use InetStudio\TagsPackage\Tags\Contracts\Services\Back\ResourceServiceContract;
 use InetStudio\TagsPackage\Tags\Contracts\Http\Responses\Back\Resource\DestroyResponseContract;
 
-/**
- * Class DestroyResponse.
- */
 class DestroyResponse implements DestroyResponseContract
 {
-    /**
-     * @var bool
-     */
-    protected $result;
+    protected ResourceServiceContract $resourceService;
 
-    /**
-     * DestroyResponse constructor.
-     *
-     * @param  bool  $result
-     */
-    public function __construct(bool $result)
+    public function __construct(ResourceServiceContract $resourceService)
     {
-        $this->result = $result;
+        $this->resourceService = $resourceService;
     }
 
-    /**
-     * Возвращаем ответ при удалении объекта.
-     *
-     * @param  Request  $request
-     *
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
-     */
     public function toResponse($request)
     {
+        $id = $request->route('tag');
+
+        $count = $this->resourceService->destroy($id);
+
         return response()->json(
             [
-                'success' => $this->result,
+                'success' => ($count > 0),
             ]
         );
     }

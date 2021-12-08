@@ -2,29 +2,9 @@
 
 namespace InetStudio\TagsPackage\Tags\Contracts\Services\Back;
 
-use InetStudio\TagsPackage\Tags\Contracts\Models\TagModelContract;
-use InetStudio\AdminPanel\Base\Contracts\Services\BaseServiceContract;
+use InetStudio\TagsPackage\Tags\Contracts\Services\ItemsServiceContract as BaseItemsServiceContract;
 
-/**
- * Interface ItemsServiceContract.
- */
-interface ItemsServiceContract extends BaseServiceContract
+interface ItemsServiceContract extends BaseItemsServiceContract
 {
-    /**
-     * Сохраняем модель.
-     *
-     * @param  array  $data
-     * @param  int  $id
-     *
-     * @return TagModelContract
-     */
-    public function save(array $data, int $id): TagModelContract;
-
-    /**
-     * Присваиваем теги объекту.
-     *
-     * @param $tags
-     * @param $item
-     */
     public function attachToObject($tags, $item): void;
 }

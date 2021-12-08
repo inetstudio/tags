@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateTagsPackageTables extends Migration
+{
+    public function up()
+    {
+        Schema::create('tags', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('slug');
+            $table->string('title')->nullable()->default(null);
+            $table->text('content')->nullable()->default(null);
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->index('slug');
+        });
+
+        Schema::create('taggables', function (Blueprint $table) {
+            $table->integer('tag_model_id')->unsigned();
+            $table->morphs('taggable');
+            $table->timestamps();
+
+            $table->unique(['tag_model_id', 'taggable_id', 'taggable_type'], 'taggables_ids_type_unique');
+            $table->index(['taggable_id', 'taggable_type']);
+        });
+    }
+
+    public function down()
+    {
+        Schema::drop('taggables');
+        Schema::drop('tags');
+    }
+}

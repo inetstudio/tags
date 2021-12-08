@@ -2,38 +2,22 @@
 
 namespace InetStudio\TagsPackage\Tags\Http\Responses\Back\Resource;
 
-use Illuminate\Http\Request;
 use InetStudio\TagsPackage\Tags\Contracts\Http\Responses\Back\Resource\IndexResponseContract;
+use InetStudio\TagsPackage\Tags\Contracts\Services\Back\DataTables\IndexServiceContract as DataTableServiceContract;
 
-/**
- * Class IndexResponse.
- */
 class IndexResponse implements IndexResponseContract
 {
-    /**
-     * @var array
-     */
-    protected $data;
+    protected DataTableServiceContract $datatableService;
 
-    /**
-     * IndexResponse constructor.
-     *
-     * @param  array  $data
-     */
-    public function __construct(array $data)
+    public function __construct(DataTableServiceContract $datatableService)
     {
-        $this->data = $data;
+        $this->datatableService = $datatableService;
     }
 
-    /**
-     * Возвращаем ответ при открытии списка объектов.
-     *
-     * @param  Request  $request
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
-     */
     public function toResponse($request)
     {
-        return view('admin.module.tags::back.pages.index', $this->data);
+        $table = $this->datatableService->html();
+
+        return view('admin.module.tags::back.pages.index', compact('table'));
     }
 }

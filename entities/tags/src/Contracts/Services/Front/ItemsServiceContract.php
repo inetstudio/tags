@@ -3,19 +3,9 @@
 namespace InetStudio\TagsPackage\Tags\Contracts\Services\Front;
 
 use Illuminate\Support\Collection;
-use InetStudio\AdminPanel\Base\Contracts\Services\BaseServiceContract;
+use InetStudio\TagsPackage\Tags\Contracts\Services\ItemsServiceContract as BaseItemsServiceContract;
 
-/**
- * Interface ItemsServiceContract.
- */
-interface ItemsServiceContract extends BaseServiceContract
+interface ItemsServiceContract extends BaseItemsServiceContract
 {
-    /**
-     * Возвращаем объекты, привязанные к материалам.
-     *
-     * @param  Collection  $materials
-     *
-     * @return Collection
-     */
     public function getItemsByMaterials(Collection $materials): Collection;
 }

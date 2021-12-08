@@ -8,18 +8,8 @@ use League\Fractal\Resource\Collection as FractalCollection;
 use InetStudio\TagsPackage\Tags\Contracts\Models\TagModelContract;
 use InetStudio\TagsPackage\Tags\Contracts\Transformers\Front\Sitemap\ItemTransformerContract;
 
-/**
- * Class ItemTransformer.
- */
 class ItemTransformer extends BaseTransformer implements ItemTransformerContract
 {
-    /**
-     * Трансформация данных.
-     *
-     * @param  TagModelContract  $item
-     *
-     * @return array
-     */
     public function transform(TagModelContract $item): array
     {
         /** @var Carbon $updatedAt */
@@ -33,13 +23,6 @@ class ItemTransformer extends BaseTransformer implements ItemTransformerContract
         ];
     }
 
-    /**
-     * Обработка коллекции объектов.
-     *
-     * @param $items
-     *
-     * @return FractalCollection
-     */
     public function transformCollection($items): FractalCollection
     {
         return new FractalCollection($items, $this);

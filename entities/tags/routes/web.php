@@ -22,9 +22,6 @@ Route::group(
             'tags',
             'ResourceControllerContract',
             [
-                'except' => [
-                    'show',
-                ],
                 'as' => 'back',
             ]
         );

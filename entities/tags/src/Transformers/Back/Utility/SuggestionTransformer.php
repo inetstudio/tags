@@ -44,7 +44,7 @@ class SuggestionTransformer extends TransformerAbstract implements SuggestionTra
                 'value' => $item['name'],
                 'data' => [
                     'id' => $item['id'],
-                    'type' => get_class($item),
+                    'type' => 'tags',
                     'title' => $item['name'],
                     'path' => parse_url($item['href'], PHP_URL_PATH),
                     'href' => $item['href'],
